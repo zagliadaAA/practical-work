@@ -9,6 +9,7 @@ type UseCase struct {
 type clientRepo interface {
 	Create(client *domain.Client) error
 	Delete(id int) error
+	Modify(client *domain.Client) error
 }
 
 func NewUseCase(clientRepo clientRepo) *UseCase {

@@ -44,6 +44,15 @@ func main() {
 	clients := repo.GetAll()
 	fmt.Println(clients)
 
+	err = uc.Modify(1, client_usecase.CreateClientReq{
+		Name:        "AArtem",
+		BDate:       "30.12.1999",
+		PhoneNumber: "89085538251",
+	})
+	if err != nil {
+		panic(err)
+	}
+
 	err = uc.Delete(2)
 	if err != nil {
 		panic(err)
@@ -54,6 +63,9 @@ func main() {
 	fmt.Println(clients)
 
 }
+
+//Создать обновить удалить
+//Клиника, сущность клиенты, сущность медицинское заключение
 
 /*
 ws := &CarWashStation
