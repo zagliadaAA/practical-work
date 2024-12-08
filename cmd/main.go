@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"project2/adapter/repository/clientRepository"
+	"project2/adapter/repository/medicalReportRepository"
 	"project2/internal/usecase/client_usecase"
+	"project2/internal/usecase/medicalReport_usecase"
 )
 
 func main() {
@@ -12,6 +14,8 @@ func main() {
 
 	repo := clientRepository.NewRepo() //создаем новое хранилище которое содержит мапу типа клиент + ID
 	uc := client_usecase.NewUseCase(repo)
+	medicalRepo := medicalReportRepository.NewMedRepo()
+	medUc := medicalReport_usecase.NewUseCase(medicalRepo)
 
 	err := uc.Create(client_usecase.CreateClientReq{
 		Name:        "Artem",
@@ -58,9 +62,21 @@ func main() {
 		panic(err)
 	}
 
+	err = medUc.Create(medicalReport_usecase.CreateMedicalReportReq{
+		DoctorName: "Mr Doctor",
+		Diagnosis:  "F20.5",
+	}, 1)
+	if err != nil {
+		panic(err)
+	}
+
 	// Печатаем всех клиентов
 	clients = repo.GetAll()
 	fmt.Println(clients)
+
+	// Печатаем все диагнозы
+	reports := medicalRepo.GetAll()
+	fmt.Println(reports)
 
 }
 
