@@ -8,6 +8,8 @@ type UseCase struct {
 
 type medRepo interface {
 	Create(medicalReport *domain.MedicalReport) error
+	Delete(id int) error
+	Modify(medicalReport *domain.MedicalReport) error
 }
 
 func NewUseCase(medRepo medRepo) *UseCase {

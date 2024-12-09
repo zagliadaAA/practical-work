@@ -6,13 +6,15 @@ import (
 	"time"
 )
 
-type CreateMedicalReportReq struct { //вспомогательный тип для создания без ID
+type ModifyReport struct { //вспомогательный тип для создания без ID
 	DoctorName string
 	Diagnosis  string
+	IDClient   int
 }
 
-func (uc *UseCase) Create(clientID int, req CreateMedicalReportReq) error {
-	report := domain.NewMedicalReport(req.DoctorName, req.Diagnosis)
+func (uc *UseCase) Modify(id int, mod ModifyReport) error {
+	report := domain.NewMedicalReport(mod.DoctorName, mod.Diagnosis)
+	report.SetID(id)
 
 	// Получаем текущее время
 	now := time.Now()
@@ -20,11 +22,11 @@ func (uc *UseCase) Create(clientID int, req CreateMedicalReportReq) error {
 	formattedTime := now.Format("02.01.2006 15:04")
 	report.CreatedAt = formattedTime
 
-	report.IDClient = clientID
+	report.IDClient = mod.IDClient
 
-	err := uc.medRepo.Create(report)
+	err := uc.medRepo.Modify(report)
 	if err != nil {
-		return fmt.Errorf("create report: %v", err)
+		return fmt.Errorf("modify report: %v", err)
 	}
 	return nil
 }

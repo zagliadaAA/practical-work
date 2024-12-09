@@ -30,3 +30,12 @@ func (r *Repo) GetAll() []domain.Client {
 	}
 	return clients
 }
+
+// FindID существует ли клиент в базе
+func (r *Repo) FindID(id int) bool {
+	if _, ok := r.clientMap[id]; !ok {
+		return false
+	}
+
+	return true
+}

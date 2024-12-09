@@ -17,6 +17,7 @@ func main() {
 	medicalRepo := medicalReportRepository.NewMedRepo()
 	medUc := medicalReport_usecase.NewUseCase(medicalRepo)
 
+	//создание клиента
 	err := uc.Create(client_usecase.CreateClientReq{
 		Name:        "Artem",
 		BDate:       "30.12.1999",
@@ -26,6 +27,7 @@ func main() {
 		panic(err)
 	}
 
+	//создание клиента
 	err = uc.Create(client_usecase.CreateClientReq{
 		Name:        "Boba",
 		BDate:       "01.01.1999",
@@ -35,6 +37,7 @@ func main() {
 		panic(err)
 	}
 
+	//создание клиента
 	err = uc.Create(client_usecase.CreateClientReq{
 		Name:        "Liza",
 		BDate:       "02.02.1998",
@@ -44,10 +47,11 @@ func main() {
 		panic(err)
 	}
 
-	// Печатаем всех клиентов
+	//печать всех клиентов
 	clients := repo.GetAll()
 	fmt.Println(clients)
 
+	//изменение клиента
 	err = uc.Modify(1, client_usecase.CreateClientReq{
 		Name:        "AArtem",
 		BDate:       "30.12.1999",
@@ -57,15 +61,73 @@ func main() {
 		panic(err)
 	}
 
+	//удаление клиента
 	err = uc.Delete(2)
 	if err != nil {
 		panic(err)
 	}
 
-	err = medUc.Create(medicalReport_usecase.CreateMedicalReportReq{
-		DoctorName: "Mr Doctor",
-		Diagnosis:  "F20.5",
-	}, 1)
+	//добавление диагноза для клиента
+	clientID := 1
+	exists := repo.FindID(clientID)
+	if exists == true {
+		err = medUc.Create(clientID, medicalReport_usecase.CreateMedicalReportReq{
+			DoctorName: "Доктор Вася",
+			Diagnosis:  "F20.5",
+		})
+	} else {
+		err = fmt.Errorf("диагноз не создан, клиент отсутствует")
+	}
+	if err != nil {
+		panic(err)
+	}
+
+	//добавление диагноза для клиента
+	clientID = 3
+	exists = repo.FindID(clientID)
+	if exists == true {
+		err = medUc.Create(clientID, medicalReport_usecase.CreateMedicalReportReq{
+			DoctorName: "Доктор Вася",
+			Diagnosis:  "F20.2",
+		})
+	} else {
+		err = fmt.Errorf("диагноз не создан, клиент отсутствует")
+	}
+	if err != nil {
+		panic(err)
+	}
+
+	// Печатаем все диагнозы
+	reports := medicalRepo.GetAll()
+	fmt.Println(reports)
+
+	//удаление диагноза для клиента
+	reportID, err := medicalRepo.GetIdReport(3)
+	if err != nil {
+		panic(err)
+	}
+	err = medUc.Delete(reportID)
+	if err != nil {
+		panic(err)
+	}
+
+	//изменение диагноза для клиента
+	clientID = 1
+	exists = repo.FindID(clientID)
+	if exists == true {
+		reportID, err = medicalRepo.GetIdReport(clientID)
+		if err != nil {
+			panic(err)
+		}
+
+		err = medUc.Modify(reportID, medicalReport_usecase.ModifyReport{
+			DoctorName: "Доктор Вася",
+			Diagnosis:  "F20.7",
+			IDClient:   clientID,
+		})
+	} else {
+		err = fmt.Errorf("диагноз не изменен, клиент отсутствует")
+	}
 	if err != nil {
 		panic(err)
 	}
@@ -75,13 +137,10 @@ func main() {
 	fmt.Println(clients)
 
 	// Печатаем все диагнозы
-	reports := medicalRepo.GetAll()
+	reports = medicalRepo.GetAll()
 	fmt.Println(reports)
 
 }
-
-//Создать обновить удалить
-//Клиника, сущность клиенты, сущность медицинское заключение
 
 /*
 ws := &CarWashStation
