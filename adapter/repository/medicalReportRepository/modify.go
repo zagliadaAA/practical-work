@@ -6,7 +6,6 @@ import (
 )
 
 func (r *MedRepo) Modify(medicalReport *domain.MedicalReport) error {
-
 	if _, ok := r.reportMap[medicalReport.ID]; !ok {
 		return fmt.Errorf("диагноза не существует")
 	}

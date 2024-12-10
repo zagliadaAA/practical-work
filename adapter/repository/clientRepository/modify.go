@@ -6,7 +6,6 @@ import (
 )
 
 func (r *Repo) Modify(client *domain.Client) error {
-
 	if _, ok := r.clientMap[client.ID]; !ok {
 		return fmt.Errorf("клиента не существует")
 	}

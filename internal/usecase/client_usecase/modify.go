@@ -5,18 +5,20 @@ import (
 	"project2/internal/domain"
 )
 
-type ModifyClient struct { //вспомогательный тип для создания без ID
+type ModifyClientReq struct { //вспомогательный тип для создания без ID
+	ID          int
 	Name        string
 	BDate       string
 	PhoneNumber string
 }
 
-func (uc *UseCase) Modify(id int, mod CreateClientReq) error {
+func (uc *UseCase) Modify(mod ModifyClientReq) error {
 	client := domain.NewClient(mod.Name, mod.BDate, mod.PhoneNumber)
-	client.SetID(id)
+	client.SetID(mod.ID)
 	err := uc.clientRepo.Modify(client)
 	if err != nil {
 		return fmt.Errorf("modify client: %v", err)
 	}
+
 	return nil
 }

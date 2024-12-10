@@ -52,7 +52,8 @@ func main() {
 	fmt.Println(clients)
 
 	//изменение клиента
-	err = uc.Modify(1, client_usecase.CreateClientReq{
+	err = uc.Modify(client_usecase.ModifyClientReq{
+		ID:          1,
 		Name:        "AArtem",
 		BDate:       "30.12.1999",
 		PhoneNumber: "89085538251",
@@ -69,30 +70,22 @@ func main() {
 
 	//добавление диагноза для клиента
 	clientID := 1
-	exists := repo.FindID(clientID)
-	if exists == true {
-		err = medUc.Create(clientID, medicalReport_usecase.CreateMedicalReportReq{
-			DoctorName: "Доктор Вася",
-			Diagnosis:  "F20.5",
-		})
-	} else {
-		err = fmt.Errorf("диагноз не создан, клиент отсутствует")
-	}
+	err = medUc.Create(medicalReport_usecase.CreateMedicalReportReq{
+		IDClient:   clientID,
+		DoctorName: "Доктор Вася",
+		Diagnosis:  "F20.5",
+	})
 	if err != nil {
 		panic(err)
 	}
 
 	//добавление диагноза для клиента
 	clientID = 3
-	exists = repo.FindID(clientID)
-	if exists == true {
-		err = medUc.Create(clientID, medicalReport_usecase.CreateMedicalReportReq{
-			DoctorName: "Доктор Вася",
-			Diagnosis:  "F20.2",
-		})
-	} else {
-		err = fmt.Errorf("диагноз не создан, клиент отсутствует")
-	}
+	err = medUc.Create(medicalReport_usecase.CreateMedicalReportReq{
+		IDClient:   clientID,
+		DoctorName: "Доктор Вася",
+		Diagnosis:  "F20.2",
+	})
 	if err != nil {
 		panic(err)
 	}
@@ -102,10 +95,7 @@ func main() {
 	fmt.Println(reports)
 
 	//удаление диагноза для клиента
-	reportID, err := medicalRepo.GetIdReport(3)
-	if err != nil {
-		panic(err)
-	}
+	reportID, _ := medicalRepo.GetIdReport(3)
 	err = medUc.Delete(reportID)
 	if err != nil {
 		panic(err)
@@ -113,21 +103,16 @@ func main() {
 
 	//изменение диагноза для клиента
 	clientID = 1
-	exists = repo.FindID(clientID)
-	if exists == true {
-		reportID, err = medicalRepo.GetIdReport(clientID)
-		if err != nil {
-			panic(err)
-		}
-
-		err = medUc.Modify(reportID, medicalReport_usecase.ModifyReport{
-			DoctorName: "Доктор Вася",
-			Diagnosis:  "F20.7",
-			IDClient:   clientID,
-		})
-	} else {
-		err = fmt.Errorf("диагноз не изменен, клиент отсутствует")
+	reportID, err = medicalRepo.GetIdReport(clientID)
+	if err != nil {
+		panic(err)
 	}
+	err = medUc.Modify(medicalReport_usecase.ModifyReportReq{
+		ID:         reportID,
+		DoctorName: "Доктор Вася",
+		Diagnosis:  "F20.7",
+		IDClient:   clientID,
+	})
 	if err != nil {
 		panic(err)
 	}

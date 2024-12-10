@@ -7,5 +7,6 @@ func (uc *UseCase) Delete(id int) error {
 	if err != nil {
 		return fmt.Errorf("delete report: %v", err)
 	}
+
 	return nil
 }

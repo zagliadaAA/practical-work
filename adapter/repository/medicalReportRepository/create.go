@@ -5,7 +5,6 @@ import (
 )
 
 func (r *MedRepo) Create(medicalReport *domain.MedicalReport) error {
-
 	id := r.getNextIdentifier()
 	medicalReport.SetID(id)
 

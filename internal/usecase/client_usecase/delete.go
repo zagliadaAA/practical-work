@@ -9,5 +9,6 @@ func (uc *UseCase) Delete(id int) error {
 	if err != nil {
 		return fmt.Errorf("delete client: %v", err)
 	}
+
 	return nil
 }

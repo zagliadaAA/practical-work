@@ -3,24 +3,18 @@ package medicalReport_usecase
 import (
 	"fmt"
 	"project2/internal/domain"
-	"time"
 )
 
-type ModifyReport struct { //вспомогательный тип для создания без ID
+type ModifyReportReq struct { //вспомогательный тип для создания без ID
+	ID         int
 	DoctorName string
 	Diagnosis  string
 	IDClient   int
 }
 
-func (uc *UseCase) Modify(id int, mod ModifyReport) error {
+func (uc *UseCase) Modify(mod ModifyReportReq) error {
 	report := domain.NewMedicalReport(mod.DoctorName, mod.Diagnosis)
-	report.SetID(id)
-
-	// Получаем текущее время
-	now := time.Now()
-	// Форматируем время в нужный формат
-	formattedTime := now.Format("02.01.2006 15:04")
-	report.CreatedAt = formattedTime
+	report.SetID(mod.ID)
 
 	report.IDClient = mod.IDClient
 
@@ -28,5 +22,6 @@ func (uc *UseCase) Modify(id int, mod ModifyReport) error {
 	if err != nil {
 		return fmt.Errorf("modify report: %v", err)
 	}
+
 	return nil
 }
