@@ -1,11 +1,11 @@
-package medicalReportRepository
+package medical_report_repository
 
 import (
 	"fmt"
 	"project2/internal/domain"
 )
 
-func (r *MedRepo) Modify(medicalReport *domain.MedicalReport) error {
+func (r *MedRepo) Update(medicalReport *domain.MedicalReport) error {
 	if _, ok := r.reportMap[medicalReport.ID]; !ok {
 		return fmt.Errorf("диагноза не существует")
 	}

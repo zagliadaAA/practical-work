@@ -1,4 +1,4 @@
-package clientRepository
+package client_repository
 
 import (
 	"project2/internal/domain"

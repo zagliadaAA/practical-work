@@ -1,4 +1,4 @@
-package medicalReportRepository
+package medical_report_repository
 
 import (
 	"project2/internal/domain"

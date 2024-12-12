@@ -10,7 +10,7 @@ type MedicalReport struct {
 	IDClient   int
 }
 
-func NewMedicalReport(doctorName, diagnosis string) *MedicalReport {
+func NewMedicalReport(doctorName, diagnosis string, clientID int) *MedicalReport {
 	// Получаем текущее время
 	now := time.Now()
 	// Форматируем время в нужный формат
@@ -20,6 +20,7 @@ func NewMedicalReport(doctorName, diagnosis string) *MedicalReport {
 		DoctorName: doctorName,
 		Diagnosis:  diagnosis,
 		CreatedAt:  formattedTime,
+		IDClient:   clientID,
 	}
 }
 

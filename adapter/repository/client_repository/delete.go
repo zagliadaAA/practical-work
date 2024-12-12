@@ -1,4 +1,4 @@
-package clientRepository
+package client_repository
 
 func (r *Repo) Delete(id int) error {
 	if _, ok := r.clientMap[id]; !ok {

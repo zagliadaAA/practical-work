@@ -2,20 +2,20 @@ package main
 
 import (
 	"fmt"
-	"project2/adapter/repository/clientRepository"
-	"project2/adapter/repository/medicalReportRepository"
+	"project2/adapter/repository/client_repository"
+	"project2/adapter/repository/medical_report_repository"
 	"project2/internal/usecase/client_usecase"
-	"project2/internal/usecase/medicalReport_usecase"
+	"project2/internal/usecase/medical_report_usecase"
 )
 
 func main() {
 
 	fmt.Println("-----\n")
 
-	repo := clientRepository.NewRepo() //создаем новое хранилище которое содержит мапу типа клиент + ID
+	repo := client_repository.NewRepo()
 	uc := client_usecase.NewUseCase(repo)
-	medicalRepo := medicalReportRepository.NewMedRepo()
-	medUc := medicalReport_usecase.NewUseCase(medicalRepo)
+	medicalRepo := medical_report_repository.NewMedRepo()
+	medUc := medical_report_usecase.NewUseCase(medicalRepo, repo)
 
 	//создание клиента
 	err := uc.Create(client_usecase.CreateClientReq{
@@ -52,7 +52,7 @@ func main() {
 	fmt.Println(clients)
 
 	//изменение клиента
-	err = uc.Modify(client_usecase.ModifyClientReq{
+	err = uc.Update(client_usecase.UpdateClientReq{
 		ID:          1,
 		Name:        "AArtem",
 		BDate:       "30.12.1999",
@@ -69,9 +69,8 @@ func main() {
 	}
 
 	//добавление диагноза для клиента
-	clientID := 1
-	err = medUc.Create(medicalReport_usecase.CreateMedicalReportReq{
-		IDClient:   clientID,
+	err = medUc.Create(medical_report_usecase.CreateMedicalReportReq{
+		IDClient:   1,
 		DoctorName: "Доктор Вася",
 		Diagnosis:  "F20.5",
 	})
@@ -80,9 +79,8 @@ func main() {
 	}
 
 	//добавление диагноза для клиента
-	clientID = 3
-	err = medUc.Create(medicalReport_usecase.CreateMedicalReportReq{
-		IDClient:   clientID,
+	err = medUc.Create(medical_report_usecase.CreateMedicalReportReq{
+		IDClient:   3,
 		DoctorName: "Доктор Вася",
 		Diagnosis:  "F20.2",
 	})
@@ -95,23 +93,17 @@ func main() {
 	fmt.Println(reports)
 
 	//удаление диагноза для клиента
-	reportID, _ := medicalRepo.GetIdReport(3)
-	err = medUc.Delete(reportID)
+	//reportID, _ := medicalRepo.GetIdReport(3)
+	err = medUc.Delete(1)
 	if err != nil {
 		panic(err)
 	}
 
 	//изменение диагноза для клиента
-	clientID = 1
-	reportID, err = medicalRepo.GetIdReport(clientID)
-	if err != nil {
-		panic(err)
-	}
-	err = medUc.Modify(medicalReport_usecase.ModifyReportReq{
-		ID:         reportID,
+	err = medUc.Update(medical_report_usecase.UpdateReportReq{
 		DoctorName: "Доктор Вася",
 		Diagnosis:  "F20.7",
-		IDClient:   clientID,
+		IDClient:   3,
 	})
 	if err != nil {
 		panic(err)
