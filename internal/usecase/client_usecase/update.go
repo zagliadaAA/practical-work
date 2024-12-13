@@ -14,7 +14,7 @@ type UpdateClientReq struct { //вспомогательный тип для с�
 func (uc *UseCase) Update(req UpdateClientReq) error {
 	client, err := uc.clientRepo.FindByID(req.ID)
 	if err != nil {
-		return fmt.Errorf("clientRepo.FindByID: %v", err)
+		return fmt.Errorf("clientRepo.FindByID: %w", err)
 	}
 
 	client.Name = req.Name
@@ -22,7 +22,7 @@ func (uc *UseCase) Update(req UpdateClientReq) error {
 	client.PhoneNumber = req.PhoneNumber
 
 	if err = uc.clientRepo.Update(client); err != nil {
-		return fmt.Errorf("clientRepo.Update: %v", err)
+		return fmt.Errorf("clientRepo.Update: %w", err)
 	}
 
 	return nil

@@ -6,7 +6,7 @@ func (uc *UseCase) Delete(id int) error {
 	reportID, _ := uc.medRepo.GetIdReport(id)
 
 	if err := uc.medRepo.Delete(reportID); err != nil {
-		return fmt.Errorf("medRepo.Delete: %v", err)
+		return fmt.Errorf("medRepo.Delete: %w", err)
 	}
 
 	return nil

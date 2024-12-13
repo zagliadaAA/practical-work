@@ -1,13 +1,12 @@
 package medical_report_repository
 
 import (
-	"fmt"
 	"project2/internal/domain"
 )
 
 func (r *MedRepo) Update(medicalReport *domain.MedicalReport) error {
 	if _, ok := r.reportMap[medicalReport.ID]; !ok {
-		return fmt.Errorf("диагноза не существует")
+		return ErrReportNotFound
 	}
 
 	r.reportMap[medicalReport.ID] = medicalReport

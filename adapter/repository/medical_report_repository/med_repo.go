@@ -1,8 +1,11 @@
 package medical_report_repository
 
 import (
+	"errors"
 	"project2/internal/domain"
 )
+
+var ErrReportNotFound = errors.New("report not found")
 
 type MedRepo struct {
 	reportMap map[int]*domain.MedicalReport

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"project2/adapter/repository/client_repository"
 	"project2/adapter/repository/medical_report_repository"
@@ -59,7 +60,11 @@ func main() {
 		PhoneNumber: "89085538251",
 	})
 	if err != nil {
-		panic(err)
+		if errors.Is(err, client_repository.ErrClientNotFound) {
+			fmt.Println("client does not exist")
+		} else {
+			panic(err)
+		}
 	}
 
 	//удаление клиента
@@ -75,7 +80,11 @@ func main() {
 		Diagnosis:  "F20.5",
 	})
 	if err != nil {
-		panic(err)
+		if errors.Is(err, client_repository.ErrClientNotFound) {
+			fmt.Println("create report for client: client does not exist")
+		} else {
+			panic(err)
+		}
 	}
 
 	//добавление диагноза для клиента
@@ -85,7 +94,11 @@ func main() {
 		Diagnosis:  "F20.2",
 	})
 	if err != nil {
-		panic(err)
+		if errors.Is(err, client_repository.ErrClientNotFound) {
+			fmt.Println("create report for client: client does not exist")
+		} else {
+			panic(err)
+		}
 	}
 
 	// Печатаем все диагнозы
@@ -93,7 +106,6 @@ func main() {
 	fmt.Println(reports)
 
 	//удаление диагноза для клиента
-	//reportID, _ := medicalRepo.GetIdReport(3)
 	err = medUc.Delete(1)
 	if err != nil {
 		panic(err)
@@ -106,7 +118,11 @@ func main() {
 		IDClient:   3,
 	})
 	if err != nil {
-		panic(err)
+		if errors.Is(err, medical_report_repository.ErrReportNotFound) {
+			fmt.Println("report does not exist for this client")
+		} else {
+			panic(err)
+		}
 	}
 
 	// Печатаем всех клиентов
@@ -116,7 +132,6 @@ func main() {
 	// Печатаем все диагнозы
 	reports = medicalRepo.GetAll()
 	fmt.Println(reports)
-
 }
 
 /*
