@@ -11,8 +11,7 @@ type medRepo interface {
 	Create(medicalReport *domain.MedicalReport) error
 	Delete(id int) error
 	Update(medicalReport *domain.MedicalReport) error
-	GetIdReport(id int) (int, error)
-	FindByID(id int) (*domain.MedicalReport, error)
+	GetReportByIDClient(clientID int) (*domain.MedicalReport, error)
 }
 
 type clientRepo interface {

@@ -11,12 +11,7 @@ type UpdateReportReq struct { //вспомогательный тип для с�
 }
 
 func (uc *UseCase) Update(req UpdateReportReq) error {
-	reportID, err := uc.medRepo.GetIdReport(req.IDClient)
-	if err != nil {
-		return fmt.Errorf("medRepo.GetIdReport: %w", err)
-	}
-
-	report, err := uc.medRepo.FindByID(reportID)
+	report, err := uc.medRepo.GetReportByIDClient(req.IDClient)
 	if err != nil {
 		return fmt.Errorf("medRepo.FindByID: %w", err)
 	}
