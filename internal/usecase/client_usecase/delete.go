@@ -5,9 +5,9 @@ import (
 )
 
 func (uc *UseCase) Delete(id int) error {
-	err := uc.clientRepo.Delete(id)
-	if err != nil {
-		return fmt.Errorf("delete client: %v", err)
+	if err := uc.clientRepo.Delete(id); err != nil {
+		return fmt.Errorf("clientRepo.Delete: %w", err)
 	}
+
 	return nil
 }

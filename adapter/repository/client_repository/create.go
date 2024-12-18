@@ -1,9 +1,8 @@
-package clientRepository
+package client_repository
 
 import "project2/internal/domain"
 
 func (r *Repo) Create(client *domain.Client) error {
-
 	id := r.getNextIdentifier()
 	client.SetID(id)
 

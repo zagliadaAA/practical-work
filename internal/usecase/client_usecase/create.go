@@ -13,9 +13,10 @@ type CreateClientReq struct { //вспомогательный тип для с�
 
 func (uc *UseCase) Create(req CreateClientReq) error {
 	client := domain.NewClient(req.Name, req.BDate, req.PhoneNumber)
-	err := uc.clientRepo.Create(client)
-	if err != nil {
-		return fmt.Errorf("create client: %v", err)
+
+	if err := uc.clientRepo.Create(client); err != nil {
+		return fmt.Errorf("clientRepo.Create: %w", err)
 	}
+
 	return nil
 }

@@ -1,8 +1,11 @@
-package clientRepository
+package client_repository
 
 import (
+	"errors"
 	"project2/internal/domain"
 )
+
+var ErrClientNotFound = errors.New("client not found")
 
 type Repo struct {
 	clientMap map[int]*domain.Client
@@ -25,8 +28,10 @@ func (r *Repo) getNextIdentifier() int {
 
 func (r *Repo) GetAll() []domain.Client {
 	clients := make([]domain.Client, 0, len(r.clientMap))
+
 	for _, client := range r.clientMap {
 		clients = append(clients, *client)
 	}
+
 	return clients
 }
