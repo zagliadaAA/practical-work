@@ -19,7 +19,7 @@ func (uc *UseCase) Update(req UpdateReportReq) error {
 	report.DoctorName = req.DoctorName
 	report.Diagnosis = req.Diagnosis
 
-	if err := uc.medRepo.Update(report); err != nil {
+	if err = uc.medRepo.Update(report); err != nil {
 		return fmt.Errorf("medRepo.Update: %w", err)
 	}
 

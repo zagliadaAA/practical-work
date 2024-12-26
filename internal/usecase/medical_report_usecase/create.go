@@ -2,6 +2,7 @@ package medical_report_usecase
 
 import (
 	"fmt"
+
 	"project2/internal/domain"
 )
 
