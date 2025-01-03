@@ -45,7 +45,7 @@ dir: "{{.InterfaceDir}}/mocks"
 packages:
 #Содержит список пакетов, для которых нужно генерировать моки.
 
-  project2/internal/usecase/medical_report_usecase:
+  project2/internal/usecase:
     #Настраивает генерацию моков для данного пакета.
 
     config:
@@ -55,12 +55,3 @@ packages:
       recursive: True
       #Поиск в подкаталогах
 
-  project2/internal/usecase/client_usecase:
-    #Настраивает генерацию моков для данного пакета.
-
-    config:
-      include-regex: ".*"
-      #Генерация для выбранного интерфейса
-
-      recursive: True
-      #Поиск в подкаталогах

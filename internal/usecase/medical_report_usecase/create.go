@@ -6,7 +6,7 @@ import (
 	"project2/internal/domain"
 )
 
-type CreateMedicalReportReq struct { //вспомогательный тип для создания без ID
+type CreateMedicalReportReq struct { //Вспомогательный тип для создания без ID
 	IDClient   int
 	DoctorName string
 	Diagnosis  string
