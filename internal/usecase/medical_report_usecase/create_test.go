@@ -1,6 +1,7 @@
 package medical_report_usecase
 
 import (
+	"errors"
 	"github.com/stretchr/testify/assert"
 	"project2/internal/domain"
 	"project2/internal/usecase/medical_report_usecase/mocks"
@@ -43,6 +44,36 @@ func TestCreateUseCase(t *testing.T) {
 				f.clientRepo.EXPECT().FindByID(args.req.IDClient).Return(client, nil)
 				report := domain.NewMedicalReport(args.req.DoctorName, args.req.Diagnosis, client.ID)
 				f.medRepo.EXPECT().Create(report).Return(nil)
+			},
+		},
+		{
+			name: "error on get client",
+			args: args{
+				req: CreateMedicalReportReq{
+					IDClient:   4,
+					DoctorName: "Ложкин",
+					Diagnosis:  "A77",
+				},
+			},
+			wantErr: true,
+			before: func(f fields, args args) {
+				f.clientRepo.EXPECT().FindByID(args.req.IDClient).Return(nil, errors.New("error get client"))
+			},
+		},
+		{
+			name: "error on create client",
+			args: args{
+				req: CreateMedicalReportReq{
+					IDClient:   4,
+					DoctorName: "Ложкин",
+					Diagnosis:  "A77",
+				},
+			},
+			wantErr: true,
+			before: func(f fields, args args) {
+				f.clientRepo.EXPECT().FindByID(args.req.IDClient).Return(client, nil)
+				report := domain.NewMedicalReport(args.req.DoctorName, args.req.Diagnosis, client.ID)
+				f.medRepo.EXPECT().Create(report).Return(errors.New("error create client"))
 			},
 		},
 	}

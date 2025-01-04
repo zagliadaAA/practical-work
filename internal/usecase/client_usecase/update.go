@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-type UpdateClientReq struct { //вспомогательный тип для создания без ID
+type UpdateClientReq struct { //Вспомогательный тип для создания без ID
 	ID          int
 	Name        string
 	BDate       string
