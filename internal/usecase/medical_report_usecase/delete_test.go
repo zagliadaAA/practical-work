@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestCreateUseCase(t *testing.T) {
+func TestDeleteUseCase(t *testing.T) {
 	t.Parallel()
 
 	//зависимости, которые нужны для теста
@@ -19,10 +19,16 @@ func TestCreateUseCase(t *testing.T) {
 
 	//данные для теста
 	type args struct {
-		req CreateMedicalReportReq
+		clientID int
+		reportID int
 	}
 
-	client := domain.NewClient("Artem", "30.12.1999", "+70000000000")
+	report := domain.MedicalReport{
+		ID:         2,
+		DoctorName: "Вова Лекарь",
+		Diagnosis:  "Z.17777",
+		IDClient:   4,
+	}
 
 	//тесты
 	tests := []struct {
@@ -34,46 +40,36 @@ func TestCreateUseCase(t *testing.T) {
 		{
 			name: "success",
 			args: args{
-				req: CreateMedicalReportReq{
-					IDClient:   4,
-					DoctorName: "Ложкин",
-					Diagnosis:  "A77",
-				},
+				clientID: 4,
+				reportID: 2,
 			},
+			wantErr: false,
 			before: func(f fields, args args) {
-				f.clientRepo.EXPECT().FindByID(args.req.IDClient).Return(client, nil)
-				report := domain.NewMedicalReport(args.req.DoctorName, args.req.Diagnosis, client.ID)
-				f.medRepo.EXPECT().Create(report).Return(nil)
+				f.medRepo.EXPECT().GetReportByIDClient(args.clientID).Return(&report, nil)
+				f.medRepo.EXPECT().Delete(args.reportID).Return(nil)
 			},
 		},
 		{
-			name: "error on get client",
+			name: "error on get report",
 			args: args{
-				req: CreateMedicalReportReq{
-					IDClient:   4,
-					DoctorName: "Ложкин",
-					Diagnosis:  "A77",
-				},
+				clientID: 6,
+				reportID: 2,
 			},
 			wantErr: true,
 			before: func(f fields, args args) {
-				f.clientRepo.EXPECT().FindByID(args.req.IDClient).Return(nil, errors.New("error get client"))
+				f.medRepo.EXPECT().GetReportByIDClient(args.clientID).Return(nil, errors.New("error on get report by id client"))
 			},
 		},
 		{
-			name: "error on create client",
+			name: "error deleting report",
 			args: args{
-				req: CreateMedicalReportReq{
-					IDClient:   4,
-					DoctorName: "Ложкин",
-					Diagnosis:  "A77",
-				},
+				clientID: 4,
+				reportID: 2,
 			},
 			wantErr: true,
 			before: func(f fields, args args) {
-				f.clientRepo.EXPECT().FindByID(args.req.IDClient).Return(client, nil)
-				report := domain.NewMedicalReport(args.req.DoctorName, args.req.Diagnosis, client.ID)
-				f.medRepo.EXPECT().Create(report).Return(errors.New("error create client"))
+				f.medRepo.EXPECT().GetReportByIDClient(args.clientID).Return(&report, nil)
+				f.medRepo.EXPECT().Delete(args.reportID).Return(errors.New("error deleting report"))
 			},
 		},
 	}
@@ -93,7 +89,7 @@ func TestCreateUseCase(t *testing.T) {
 			uc := NewUseCase(f.medRepo, f.clientRepo)
 
 			//выполнили
-			err := uc.Create(tt.args.req)
+			err := uc.Delete(tt.args.clientID)
 
 			//проверяем результат
 			if tt.wantErr {
