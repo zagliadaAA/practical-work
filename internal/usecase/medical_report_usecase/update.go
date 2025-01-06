@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-type UpdateReportReq struct { //вспомогательный тип для создания без ID
+type UpdateReportReq struct { //Вспомогательный тип для создания без ID
 	DoctorName string
 	Diagnosis  string
 	IDClient   int
@@ -13,7 +13,7 @@ type UpdateReportReq struct { //вспомогательный тип для с�
 func (uc *UseCase) Update(req UpdateReportReq) error {
 	report, err := uc.medRepo.GetReportByIDClient(req.IDClient)
 	if err != nil {
-		return fmt.Errorf("medRepo.FindByID: %w", err)
+		return fmt.Errorf("medRepo.GetReportByIDClient: %w", err)
 	}
 
 	report.DoctorName = req.DoctorName
