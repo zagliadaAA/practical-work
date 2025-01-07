@@ -4,12 +4,12 @@ import (
 	"project2/internal/domain"
 )
 
-func (r *MedRepo) Update(medicalReport *domain.MedicalReport) error {
+func (r *MedRepo) Update(medicalReport *domain.MedicalReport) (*domain.MedicalReport, error) {
 	if _, ok := r.reportMap[medicalReport.ID]; !ok {
-		return ErrReportNotFound
+		return nil, ErrReportNotFound
 	}
 
 	r.reportMap[medicalReport.ID] = medicalReport
 
-	return nil
+	return medicalReport, nil
 }

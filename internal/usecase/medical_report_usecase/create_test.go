@@ -2,10 +2,12 @@ package medical_report_usecase
 
 import (
 	"errors"
-	"github.com/stretchr/testify/assert"
+	"testing"
+
 	"project2/internal/domain"
 	"project2/internal/usecase/medical_report_usecase/mocks"
-	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateUseCase(t *testing.T) {

@@ -2,10 +2,11 @@ package client_usecase
 
 import (
 	"fmt"
+
 	"project2/internal/domain"
 )
 
-type CreateClientReq struct { //вспомогательный тип для создания без ID
+type CreateClientReq struct { //Вспомогательный тип для создания без ID
 	Name        string
 	BDate       string
 	PhoneNumber string

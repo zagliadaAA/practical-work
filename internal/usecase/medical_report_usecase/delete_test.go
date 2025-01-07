@@ -52,7 +52,7 @@ func TestDeleteUseCase(t *testing.T) {
 		{
 			name: "error on get report",
 			args: args{
-				clientID: 6,
+				clientID: 4,
 				reportID: 2,
 			},
 			wantErr: true,

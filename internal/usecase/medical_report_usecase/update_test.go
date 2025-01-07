@@ -2,10 +2,13 @@ package medical_report_usecase
 
 import (
 	"errors"
-	"github.com/stretchr/testify/assert"
+	"testing"
+	"time"
+
 	"project2/internal/domain"
 	"project2/internal/usecase/medical_report_usecase/mocks"
-	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestUpdateUseCase(t *testing.T) {
@@ -22,12 +25,15 @@ func TestUpdateUseCase(t *testing.T) {
 		req UpdateReportReq
 	}
 
-	report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4)
+	//report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4)
+	now := time.Now()
+	formattedTime := now.Format("02.01.2006 15:04")
 
 	//тесты
 	tests := []struct {
 		name    string
 		args    args
+		want    *domain.MedicalReport
 		wantErr bool
 		before  func(f fields, args args)
 	}{
@@ -36,16 +42,24 @@ func TestUpdateUseCase(t *testing.T) {
 			args: args{
 				req: UpdateReportReq{
 					IDClient:   4,
-					DoctorName: "Ложкин",
-					Diagnosis:  "A77",
+					DoctorName: "Ложкин В",
+					Diagnosis:  "A77.7",
 				},
+			},
+			want: &domain.MedicalReport{
+				IDClient:   4,
+				DoctorName: "Ложкин В",
+				Diagnosis:  "A77.7",
+				CreatedAt:  formattedTime,
 			},
 			wantErr: false,
 			before: func(f fields, args args) {
+				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4)
+
 				f.medRepo.EXPECT().GetReportByIDClient(args.req.IDClient).Return(report, nil)
 				report.DoctorName = args.req.DoctorName
 				report.Diagnosis = args.req.Diagnosis
-				f.medRepo.EXPECT().Update(report).Return(nil)
+				f.medRepo.EXPECT().Update(report).Return(report, nil)
 			},
 		},
 		{
@@ -73,10 +87,12 @@ func TestUpdateUseCase(t *testing.T) {
 			},
 			wantErr: true,
 			before: func(f fields, args args) {
+				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4)
+
 				f.medRepo.EXPECT().GetReportByIDClient(args.req.IDClient).Return(report, nil)
 				report.DoctorName = args.req.DoctorName
 				report.Diagnosis = args.req.Diagnosis
-				f.medRepo.EXPECT().Update(report).Return(errors.New("error on update report"))
+				f.medRepo.EXPECT().Update(report).Return(nil, errors.New("error on update report"))
 			},
 		},
 	}
@@ -96,7 +112,7 @@ func TestUpdateUseCase(t *testing.T) {
 			uc := NewUseCase(f.medRepo, f.clientRepo)
 
 			//выполнили
-			err := uc.Update(tt.args.req)
+			e, err := uc.Update(tt.args.req)
 
 			//проверяем результат
 			if tt.wantErr {
@@ -104,6 +120,7 @@ func TestUpdateUseCase(t *testing.T) {
 				return
 			}
 			a.NoError(err)
+			a.Equal(tt.want, e)
 		})
 	}
 
