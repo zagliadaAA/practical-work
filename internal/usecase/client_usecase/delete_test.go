@@ -2,13 +2,17 @@ package client_usecase
 
 import (
 	"errors"
-	"github.com/stretchr/testify/assert"
-	"project2/internal/usecase/client_usecase/mocks"
 	"testing"
+
+	"project2/internal/usecase/client_usecase/mocks"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDeleteUseCase(t *testing.T) {
 	t.Parallel()
+
+	errTest := errors.New("error test")
 
 	//зависимости, которые нужны для теста
 	type fields struct {
@@ -24,7 +28,7 @@ func TestDeleteUseCase(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		wantErr bool
+		wantErr error
 		before  func(f fields, args args)
 	}{
 		{
@@ -32,7 +36,6 @@ func TestDeleteUseCase(t *testing.T) {
 			args: args{
 				clientID: 2,
 			},
-			wantErr: false,
 			before: func(f fields, args args) {
 				f.clientRepo.EXPECT().Delete(args.clientID).Return(nil)
 			},
@@ -42,9 +45,9 @@ func TestDeleteUseCase(t *testing.T) {
 			args: args{
 				clientID: 2,
 			},
-			wantErr: true,
+			wantErr: errTest,
 			before: func(f fields, args args) {
-				f.clientRepo.EXPECT().Delete(args.clientID).Return(errors.New("error deleted client"))
+				f.clientRepo.EXPECT().Delete(args.clientID).Return(errTest)
 			},
 		},
 	}
@@ -66,12 +69,13 @@ func TestDeleteUseCase(t *testing.T) {
 			err := uc.Delete(tt.args.clientID)
 
 			//проверяем результат
-			if tt.wantErr {
-				a.Error(err)
+			if tt.wantErr != nil {
+				a.NotNil(err)
+				a.True(errors.Is(err, tt.wantErr), "expected: %v, got: %v", tt.wantErr, err)
 				return
 			}
+
 			a.NoError(err)
 		})
 	}
-
 }

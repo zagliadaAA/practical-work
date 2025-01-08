@@ -2,14 +2,18 @@ package medical_report_usecase
 
 import (
 	"errors"
-	"github.com/stretchr/testify/assert"
+	"testing"
+
 	"project2/internal/domain"
 	"project2/internal/usecase/medical_report_usecase/mocks"
-	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDeleteUseCase(t *testing.T) {
 	t.Parallel()
+
+	errTest := errors.New("error test")
 
 	//зависимости, которые нужны для теста
 	type fields struct {
@@ -23,18 +27,11 @@ func TestDeleteUseCase(t *testing.T) {
 		reportID int
 	}
 
-	report := domain.MedicalReport{
-		ID:         2,
-		DoctorName: "Вова Лекарь",
-		Diagnosis:  "Z.17777",
-		IDClient:   4,
-	}
-
 	//тесты
 	tests := []struct {
 		name    string
 		args    args
-		wantErr bool
+		wantErr error
 		before  func(f fields, args args)
 	}{
 		{
@@ -43,10 +40,12 @@ func TestDeleteUseCase(t *testing.T) {
 				clientID: 4,
 				reportID: 2,
 			},
-			wantErr: false,
 			before: func(f fields, args args) {
-				f.medRepo.EXPECT().GetReportByIDClient(args.clientID).Return(&report, nil)
-				f.medRepo.EXPECT().Delete(args.reportID).Return(nil)
+				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4)
+				report.ID = args.reportID
+
+				f.medRepo.EXPECT().GetReportByIDClient(args.clientID).Return(report, nil)
+				f.medRepo.EXPECT().Delete(report.ID).Return(nil)
 			},
 		},
 		{
@@ -55,9 +54,9 @@ func TestDeleteUseCase(t *testing.T) {
 				clientID: 4,
 				reportID: 2,
 			},
-			wantErr: true,
+			wantErr: errTest,
 			before: func(f fields, args args) {
-				f.medRepo.EXPECT().GetReportByIDClient(args.clientID).Return(nil, errors.New("error on get report by id client"))
+				f.medRepo.EXPECT().GetReportByIDClient(args.clientID).Return(nil, errTest)
 			},
 		},
 		{
@@ -66,10 +65,13 @@ func TestDeleteUseCase(t *testing.T) {
 				clientID: 4,
 				reportID: 2,
 			},
-			wantErr: true,
+			wantErr: errTest,
 			before: func(f fields, args args) {
-				f.medRepo.EXPECT().GetReportByIDClient(args.clientID).Return(&report, nil)
-				f.medRepo.EXPECT().Delete(args.reportID).Return(errors.New("error deleting report"))
+				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4)
+				report.ID = args.reportID
+
+				f.medRepo.EXPECT().GetReportByIDClient(args.clientID).Return(report, nil)
+				f.medRepo.EXPECT().Delete(report.ID).Return(errTest)
 			},
 		},
 	}
@@ -92,12 +94,13 @@ func TestDeleteUseCase(t *testing.T) {
 			err := uc.Delete(tt.args.clientID)
 
 			//проверяем результат
-			if tt.wantErr {
-				a.Error(err)
+			if tt.wantErr != nil {
+				a.NotNil(err)
+				a.True(errors.Is(err, tt.wantErr), "expected: %v, got: %v", tt.wantErr, err)
 				return
 			}
+
 			a.NoError(err)
 		})
 	}
-
 }

@@ -7,9 +7,9 @@ type UseCase struct {
 }
 
 type clientRepo interface {
-	Create(client *domain.Client) error
+	Create(client *domain.Client) (*domain.Client, error)
 	Delete(id int) error
-	Update(client *domain.Client) error
+	Update(client *domain.Client) (*domain.Client, error)
 	FindByID(id int) (*domain.Client, error)
 }
 

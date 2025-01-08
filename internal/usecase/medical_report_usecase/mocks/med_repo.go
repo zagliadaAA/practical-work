@@ -22,21 +22,33 @@ func (_m *MedRepo) EXPECT() *MedRepo_Expecter {
 }
 
 // Create provides a mock function with given fields: medicalReport
-func (_m *MedRepo) Create(medicalReport *domain.MedicalReport) error {
+func (_m *MedRepo) Create(medicalReport *domain.MedicalReport) (*domain.MedicalReport, error) {
 	ret := _m.Called(medicalReport)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
 	}
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(*domain.MedicalReport) error); ok {
+	var r0 *domain.MedicalReport
+	var r1 error
+	if rf, ok := ret.Get(0).(func(*domain.MedicalReport) (*domain.MedicalReport, error)); ok {
+		return rf(medicalReport)
+	}
+	if rf, ok := ret.Get(0).(func(*domain.MedicalReport) *domain.MedicalReport); ok {
 		r0 = rf(medicalReport)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*domain.MedicalReport)
+		}
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(*domain.MedicalReport) error); ok {
+		r1 = rf(medicalReport)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // MedRepo_Create_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Create'
@@ -57,12 +69,12 @@ func (_c *MedRepo_Create_Call) Run(run func(medicalReport *domain.MedicalReport)
 	return _c
 }
 
-func (_c *MedRepo_Create_Call) Return(_a0 error) *MedRepo_Create_Call {
-	_c.Call.Return(_a0)
+func (_c *MedRepo_Create_Call) Return(_a0 *domain.MedicalReport, _a1 error) *MedRepo_Create_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MedRepo_Create_Call) RunAndReturn(run func(*domain.MedicalReport) error) *MedRepo_Create_Call {
+func (_c *MedRepo_Create_Call) RunAndReturn(run func(*domain.MedicalReport) (*domain.MedicalReport, error)) *MedRepo_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }

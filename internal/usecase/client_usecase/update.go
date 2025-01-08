@@ -2,6 +2,8 @@ package client_usecase
 
 import (
 	"fmt"
+
+	"project2/internal/domain"
 )
 
 type UpdateClientReq struct { //Вспомогательный тип для создания без ID
@@ -11,19 +13,20 @@ type UpdateClientReq struct { //Вспомогательный тип для с�
 	PhoneNumber string
 }
 
-func (uc *UseCase) Update(req UpdateClientReq) error {
+func (uc *UseCase) Update(req UpdateClientReq) (*domain.Client, error) {
 	client, err := uc.clientRepo.FindByID(req.ID)
 	if err != nil {
-		return fmt.Errorf("clientRepo.FindByID: %w", err)
+		return nil, fmt.Errorf("clientRepo.FindByID: %w", err)
 	}
 
 	client.Name = req.Name
 	client.BDate = req.BDate
 	client.PhoneNumber = req.PhoneNumber
 
-	if err = uc.clientRepo.Update(client); err != nil {
-		return fmt.Errorf("clientRepo.Update: %w", err)
+	clientUpdate, err := uc.clientRepo.Update(client)
+	if err != nil {
+		return nil, fmt.Errorf("clientRepo.Update: %w", err)
 	}
 
-	return nil
+	return clientUpdate, nil
 }

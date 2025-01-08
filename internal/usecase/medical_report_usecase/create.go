@@ -12,17 +12,18 @@ type CreateMedicalReportReq struct { //Вспомогательный тип д�
 	Diagnosis  string
 }
 
-func (uc *UseCase) Create(req CreateMedicalReportReq) error {
+func (uc *UseCase) Create(req CreateMedicalReportReq) (*domain.MedicalReport, error) {
 	client, err := uc.clientRepo.FindByID(req.IDClient)
 	if err != nil {
-		return fmt.Errorf("clientRepo.FindByID: %w", err)
+		return nil, fmt.Errorf("clientRepo.FindByID: %w", err)
 	}
 
 	report := domain.NewMedicalReport(req.DoctorName, req.Diagnosis, client.ID)
 
-	if err = uc.medRepo.Create(report); err != nil {
-		return fmt.Errorf("medRepo.Create: %w", err)
+	reportCreate, err := uc.medRepo.Create(report)
+	if err != nil {
+		return nil, fmt.Errorf("medRepo.Create: %w", err)
 	}
 
-	return nil
+	return reportCreate, nil
 }

@@ -12,12 +12,13 @@ type CreateClientReq struct { //Вспомогательный тип для с�
 	PhoneNumber string
 }
 
-func (uc *UseCase) Create(req CreateClientReq) error {
+func (uc *UseCase) Create(req CreateClientReq) (*domain.Client, error) {
 	client := domain.NewClient(req.Name, req.BDate, req.PhoneNumber)
 
-	if err := uc.clientRepo.Create(client); err != nil {
-		return fmt.Errorf("clientRepo.Create: %w", err)
+	clientCreate, err := uc.clientRepo.Create(client)
+	if err != nil {
+		return nil, fmt.Errorf("clientRepo.Create: %w", err)
 	}
 
-	return nil
+	return clientCreate, nil
 }

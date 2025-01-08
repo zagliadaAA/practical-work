@@ -2,14 +2,18 @@ package client_usecase
 
 import (
 	"errors"
-	"github.com/stretchr/testify/assert"
+	"testing"
+
 	"project2/internal/domain"
 	"project2/internal/usecase/client_usecase/mocks"
-	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestUpdateUseCase(t *testing.T) {
 	t.Parallel()
+
+	errTest := errors.New("error test")
 
 	//зависимости, которые нужны для теста
 	type fields struct {
@@ -21,13 +25,12 @@ func TestUpdateUseCase(t *testing.T) {
 		req UpdateClientReq
 	}
 
-	client := domain.NewClient("Artem", "30.12.1999", "+7888888")
-
 	//тесты
 	tests := []struct {
 		name    string
 		args    args
-		wantErr bool
+		want    *domain.Client
+		wantErr error
 		before  func(f fields, args args)
 	}{
 		{
@@ -40,13 +43,19 @@ func TestUpdateUseCase(t *testing.T) {
 					PhoneNumber: "+7999999",
 				},
 			},
-			wantErr: false,
+			want: &domain.Client{
+				Name:        "Poly",
+				BDate:       "20.10.2010",
+				PhoneNumber: "+7999999",
+			},
 			before: func(f fields, args args) {
+				client := domain.NewClient("Artem", "30.12.1999", "+7888888")
+
 				f.clientRepo.EXPECT().FindByID(args.req.ID).Return(client, nil)
 				client.Name = args.req.Name
 				client.BDate = args.req.BDate
 				client.PhoneNumber = args.req.PhoneNumber
-				f.clientRepo.EXPECT().Update(client).Return(nil)
+				f.clientRepo.EXPECT().Update(client).Return(client, nil)
 			},
 		},
 		{
@@ -59,9 +68,9 @@ func TestUpdateUseCase(t *testing.T) {
 					PhoneNumber: "+7999999",
 				},
 			},
-			wantErr: true,
+			wantErr: errTest,
 			before: func(f fields, args args) {
-				f.clientRepo.EXPECT().FindByID(args.req.ID).Return(client, errors.New("error on FindByID"))
+				f.clientRepo.EXPECT().FindByID(args.req.ID).Return(nil, errTest)
 			},
 		},
 		{
@@ -74,13 +83,15 @@ func TestUpdateUseCase(t *testing.T) {
 					PhoneNumber: "+7999999",
 				},
 			},
-			wantErr: true,
+			wantErr: errTest,
 			before: func(f fields, args args) {
+				client := domain.NewClient("Artem", "30.12.1999", "+7888888")
+
 				f.clientRepo.EXPECT().FindByID(args.req.ID).Return(client, nil)
 				client.Name = args.req.Name
 				client.BDate = args.req.BDate
 				client.PhoneNumber = args.req.PhoneNumber
-				f.clientRepo.EXPECT().Update(client).Return(errors.New("error on update client"))
+				f.clientRepo.EXPECT().Update(client).Return(nil, errTest)
 			},
 		},
 	}
@@ -99,14 +110,17 @@ func TestUpdateUseCase(t *testing.T) {
 			uc := NewUseCase(f.clientRepo)
 
 			//выполнили
-			err := uc.Update(tt.args.req)
+			e, err := uc.Update(tt.args.req)
 
 			//проверяем результат
-			if tt.wantErr {
-				a.Error(err)
+			if tt.wantErr != nil {
+				a.NotNil(err)
+				a.True(errors.Is(err, tt.wantErr), "expected: %v, got: %v", tt.wantErr, err)
 				return
 			}
+
 			a.NoError(err)
+			a.Equal(tt.want, e)
 		})
 	}
 

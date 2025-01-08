@@ -14,6 +14,8 @@ import (
 func TestUpdateUseCase(t *testing.T) {
 	t.Parallel()
 
+	errTest := errors.New("error test")
+
 	//зависимости, которые нужны для теста
 	type fields struct {
 		medRepo    *mocks.MedRepo
@@ -25,7 +27,6 @@ func TestUpdateUseCase(t *testing.T) {
 		req UpdateReportReq
 	}
 
-	//report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4)
 	now := time.Now()
 	formattedTime := now.Format("02.01.2006 15:04")
 
@@ -34,7 +35,7 @@ func TestUpdateUseCase(t *testing.T) {
 		name    string
 		args    args
 		want    *domain.MedicalReport
-		wantErr bool
+		wantErr error
 		before  func(f fields, args args)
 	}{
 		{
@@ -52,7 +53,6 @@ func TestUpdateUseCase(t *testing.T) {
 				Diagnosis:  "A77.7",
 				CreatedAt:  formattedTime,
 			},
-			wantErr: false,
 			before: func(f fields, args args) {
 				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4)
 
@@ -71,9 +71,9 @@ func TestUpdateUseCase(t *testing.T) {
 					Diagnosis:  "A77",
 				},
 			},
-			wantErr: true,
+			wantErr: errTest,
 			before: func(f fields, args args) {
-				f.medRepo.EXPECT().GetReportByIDClient(args.req.IDClient).Return(nil, errors.New("error on get report by id client"))
+				f.medRepo.EXPECT().GetReportByIDClient(args.req.IDClient).Return(nil, errTest)
 			},
 		},
 		{
@@ -85,14 +85,14 @@ func TestUpdateUseCase(t *testing.T) {
 					Diagnosis:  "A77",
 				},
 			},
-			wantErr: true,
+			wantErr: errTest,
 			before: func(f fields, args args) {
 				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4)
 
 				f.medRepo.EXPECT().GetReportByIDClient(args.req.IDClient).Return(report, nil)
 				report.DoctorName = args.req.DoctorName
 				report.Diagnosis = args.req.Diagnosis
-				f.medRepo.EXPECT().Update(report).Return(nil, errors.New("error on update report"))
+				f.medRepo.EXPECT().Update(report).Return(nil, errTest)
 			},
 		},
 	}
@@ -115,13 +115,14 @@ func TestUpdateUseCase(t *testing.T) {
 			e, err := uc.Update(tt.args.req)
 
 			//проверяем результат
-			if tt.wantErr {
-				a.Error(err)
+			if tt.wantErr != nil {
+				a.NotNil(err)
+				a.True(errors.Is(err, tt.wantErr), "expected: %v, got: %v", tt.wantErr, err)
 				return
 			}
+
 			a.NoError(err)
 			a.Equal(tt.want, e)
 		})
 	}
-
 }

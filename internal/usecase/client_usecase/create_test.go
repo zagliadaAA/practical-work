@@ -2,14 +2,18 @@ package client_usecase
 
 import (
 	"errors"
-	"github.com/stretchr/testify/assert"
+	"testing"
+
 	"project2/internal/domain"
 	"project2/internal/usecase/client_usecase/mocks"
-	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateUseCase(t *testing.T) {
 	t.Parallel()
+
+	errTest := errors.New("error test")
 
 	//зависимости, которые нужны для теста
 	type fields struct {
@@ -25,7 +29,8 @@ func TestCreateUseCase(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		wantErr bool
+		want    *domain.Client
+		wantErr error
 		before  func(f fields, args args)
 	}{
 		{
@@ -37,10 +42,14 @@ func TestCreateUseCase(t *testing.T) {
 					PhoneNumber: "+7999999",
 				},
 			},
-			wantErr: false,
+			want: &domain.Client{
+				Name:        "Poly",
+				BDate:       "20.10.2010",
+				PhoneNumber: "+7999999",
+			},
 			before: func(f fields, args args) {
 				client := domain.NewClient(args.req.Name, args.req.BDate, args.req.PhoneNumber)
-				f.clientRepo.EXPECT().Create(client).Return(nil)
+				f.clientRepo.EXPECT().Create(client).Return(client, nil)
 			},
 		},
 		{
@@ -52,10 +61,10 @@ func TestCreateUseCase(t *testing.T) {
 					PhoneNumber: "+7999999",
 				},
 			},
-			wantErr: true,
+			wantErr: errTest,
 			before: func(f fields, args args) {
 				client := domain.NewClient(args.req.Name, args.req.BDate, args.req.PhoneNumber)
-				f.clientRepo.EXPECT().Create(client).Return(errors.New("error on create client"))
+				f.clientRepo.EXPECT().Create(client).Return(nil, errTest)
 			},
 		},
 	}
@@ -74,14 +83,17 @@ func TestCreateUseCase(t *testing.T) {
 			uc := NewUseCase(f.clientRepo)
 
 			//выполнили
-			err := uc.Create(tt.args.req)
+			e, err := uc.Create(tt.args.req)
 
 			//проверяем результат
-			if tt.wantErr {
-				a.Error(err)
+			if tt.wantErr != nil {
+				a.NotNil(err)
+				a.True(errors.Is(err, tt.wantErr), "expected: %v, got: %v", tt.wantErr, err)
 				return
 			}
+
 			a.NoError(err)
+			a.Equal(tt.want, e)
 		})
 	}
 

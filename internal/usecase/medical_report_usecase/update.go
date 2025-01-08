@@ -25,9 +25,6 @@ func (uc *UseCase) Update(req UpdateReportReq) (*domain.MedicalReport, error) {
 	if err != nil {
 		return nil, fmt.Errorf("medRepo.Update: %w", err)
 	}
-	/*if reportUpdate, err := uc.medRepo.Update(report); err != nil {
-		return nil, fmt.Errorf("medRepo.Update: %w", err)
-	}*/
 
 	return reportUpdate, nil
 }

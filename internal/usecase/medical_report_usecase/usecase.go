@@ -8,7 +8,7 @@ type UseCase struct {
 }
 
 type medRepo interface {
-	Create(medicalReport *domain.MedicalReport) error
+	Create(medicalReport *domain.MedicalReport) (*domain.MedicalReport, error)
 	Delete(id int) error
 	Update(medicalReport *domain.MedicalReport) (*domain.MedicalReport, error)
 	GetReportByIDClient(clientID int) (*domain.MedicalReport, error)
