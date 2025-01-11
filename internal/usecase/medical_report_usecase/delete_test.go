@@ -95,8 +95,7 @@ func TestDeleteUseCase(t *testing.T) {
 
 			//проверяем результат
 			if tt.wantErr != nil {
-				a.NotNil(err)
-				a.True(errors.Is(err, tt.wantErr), "expected: %v, got: %v", tt.wantErr, err)
+				a.ErrorIs(err, tt.wantErr)
 				return
 			}
 
