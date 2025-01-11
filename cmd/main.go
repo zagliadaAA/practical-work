@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+
 	"project2/adapter/repository/client_repository"
 	"project2/adapter/repository/medical_report_repository"
 	"project2/internal/usecase/client_usecase"
@@ -19,7 +20,7 @@ func main() {
 	medUc := medical_report_usecase.NewUseCase(medicalRepo, repo)
 
 	//создание клиента
-	err := uc.Create(client_usecase.CreateClientReq{
+	_, err := uc.Create(client_usecase.CreateClientReq{
 		Name:        "Artem",
 		BDate:       "30.12.1999",
 		PhoneNumber: "89085538251",
@@ -29,7 +30,7 @@ func main() {
 	}
 
 	//создание клиента
-	err = uc.Create(client_usecase.CreateClientReq{
+	_, err = uc.Create(client_usecase.CreateClientReq{
 		Name:        "Boba",
 		BDate:       "01.01.1999",
 		PhoneNumber: "89087732819",
@@ -39,7 +40,7 @@ func main() {
 	}
 
 	//создание клиента
-	err = uc.Create(client_usecase.CreateClientReq{
+	_, err = uc.Create(client_usecase.CreateClientReq{
 		Name:        "Liza",
 		BDate:       "02.02.1998",
 		PhoneNumber: "8908846195",
@@ -53,7 +54,7 @@ func main() {
 	fmt.Println(clients)
 
 	//изменение клиента
-	err = uc.Update(client_usecase.UpdateClientReq{
+	_, err = uc.Update(client_usecase.UpdateClientReq{
 		ID:          1,
 		Name:        "AArtem",
 		BDate:       "30.12.1999",
@@ -74,7 +75,7 @@ func main() {
 	}
 
 	//добавление диагноза для клиента
-	err = medUc.Create(medical_report_usecase.CreateMedicalReportReq{
+	_, err = medUc.Create(medical_report_usecase.CreateMedicalReportReq{
 		IDClient:   1,
 		DoctorName: "Доктор Вася",
 		Diagnosis:  "F20.5",
@@ -88,7 +89,7 @@ func main() {
 	}
 
 	//добавление диагноза для клиента
-	err = medUc.Create(medical_report_usecase.CreateMedicalReportReq{
+	_, err = medUc.Create(medical_report_usecase.CreateMedicalReportReq{
 		IDClient:   3,
 		DoctorName: "Доктор Вася",
 		Diagnosis:  "F20.2",
@@ -112,7 +113,7 @@ func main() {
 	}
 
 	//изменение диагноза для клиента
-	err = medUc.Update(medical_report_usecase.UpdateReportReq{
+	_, err = medUc.Update(medical_report_usecase.UpdateReportReq{
 		DoctorName: "Доктор Вася",
 		Diagnosis:  "F20.7",
 		IDClient:   3,
