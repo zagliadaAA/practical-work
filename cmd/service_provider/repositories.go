@@ -4,16 +4,8 @@ import (
 	"context"
 
 	"project2/adapter/postgres/clients"
-	"project2/adapter/repository/medical_report_repository"
+	"project2/adapter/postgres/reports"
 )
-
-/*func (sp *ServiceProvider) GetClientRepository() *client_repository.Repo {
-	if sp.clientRepo == nil {
-		sp.clientRepo = client_repository.NewRepo()
-	}
-
-	return sp.clientRepo
-}*/
 
 func (sp *ServiceProvider) GetClientRepository() *clients.Repo {
 	if sp.clientRepo == nil {
@@ -23,9 +15,9 @@ func (sp *ServiceProvider) GetClientRepository() *clients.Repo {
 	return sp.clientRepo
 }
 
-func (sp *ServiceProvider) GetMedicalReportRepository() *medical_report_repository.MedRepo {
+func (sp *ServiceProvider) GetMedicalReportRepository() *reports.MedRepo {
 	if sp.medicalReportRepo == nil {
-		sp.medicalReportRepo = medical_report_repository.NewMedRepo()
+		sp.medicalReportRepo = reports.NewMedRepo(sp.GetDbCluster(context.Background()))
 	}
 
 	return sp.medicalReportRepo
