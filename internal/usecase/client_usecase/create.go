@@ -9,17 +9,12 @@ import (
 
 type CreateClientReq struct { //Вспомогательный тип для создания без ID
 	Name        string
-	BDate       string
+	BDate       time.Time
 	PhoneNumber string
 }
 
 func (uc *UseCase) Create(req CreateClientReq) (*domain.Client, error) {
-	BDate, err := time.Parse("02.01.2006", req.BDate)
-	if err != nil {
-		return nil, fmt.Errorf("date conversion error: %w", err)
-	}
-
-	client := domain.NewClient(req.Name, BDate, req.PhoneNumber)
+	client := domain.NewClient(req.Name, req.BDate, req.PhoneNumber)
 
 	clientCreate, err := uc.clientRepo.Create(client)
 	if err != nil {

@@ -3,6 +3,7 @@ package client_usecase
 import (
 	"errors"
 	"testing"
+	"time"
 
 	"project2/internal/domain"
 	"project2/internal/usecase/client_usecase/mocks"
@@ -38,13 +39,13 @@ func TestCreateUseCase(t *testing.T) {
 			args: args{
 				req: CreateClientReq{
 					Name:        "Poly",
-					BDate:       "20.10.2010",
+					BDate:       time.Date(1999, 12, 10, 0, 0, 0, 0, time.UTC),
 					PhoneNumber: "+7999999",
 				},
 			},
 			want: &domain.Client{
 				Name:        "Poly",
-				BDate:       "20.10.2010",
+				BDate:       time.Date(1999, 12, 10, 0, 0, 0, 0, time.UTC),
 				PhoneNumber: "+7999999",
 			},
 			before: func(f fields, args args) {
@@ -57,7 +58,7 @@ func TestCreateUseCase(t *testing.T) {
 			args: args{
 				req: CreateClientReq{
 					Name:        "Poly",
-					BDate:       "20.10.2010",
+					BDate:       time.Date(1999, 12, 10, 0, 0, 0, 0, time.UTC),
 					PhoneNumber: "+7999999",
 				},
 			},

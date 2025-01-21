@@ -3,6 +3,7 @@ package client_usecase
 import (
 	"errors"
 	"testing"
+	"time"
 
 	"project2/internal/domain"
 	"project2/internal/usecase/client_usecase/mocks"
@@ -39,17 +40,17 @@ func TestUpdateUseCase(t *testing.T) {
 				req: UpdateClientReq{
 					ID:          4,
 					Name:        "Poly",
-					BDate:       "20.10.2010",
+					BDate:       time.Date(2010, 10, 10, 0, 0, 0, 0, time.UTC),
 					PhoneNumber: "+7999999",
 				},
 			},
 			want: &domain.Client{
 				Name:        "Poly",
-				BDate:       "20.10.2010",
+				BDate:       time.Date(2010, 10, 10, 0, 0, 0, 0, time.UTC),
 				PhoneNumber: "+7999999",
 			},
 			before: func(f fields, args args) {
-				client := domain.NewClient("Artem", "30.12.1999", "+7888888")
+				client := domain.NewClient("Artem", time.Date(1999, 10, 10, 0, 0, 0, 0, time.UTC), "+7888888")
 
 				f.clientRepo.EXPECT().FindByID(args.req.ID).Return(client, nil)
 				client.Name = args.req.Name
@@ -64,7 +65,7 @@ func TestUpdateUseCase(t *testing.T) {
 				req: UpdateClientReq{
 					ID:          4,
 					Name:        "Poly",
-					BDate:       "20.10.2010",
+					BDate:       time.Date(2010, 10, 10, 0, 0, 0, 0, time.UTC),
 					PhoneNumber: "+7999999",
 				},
 			},
@@ -79,13 +80,13 @@ func TestUpdateUseCase(t *testing.T) {
 				req: UpdateClientReq{
 					ID:          4,
 					Name:        "Poly",
-					BDate:       "20.10.2010",
+					BDate:       time.Date(2010, 10, 10, 0, 0, 0, 0, time.UTC),
 					PhoneNumber: "+7999999",
 				},
 			},
 			wantErr: errTest,
 			before: func(f fields, args args) {
-				client := domain.NewClient("Artem", "30.12.1999", "+7888888")
+				client := domain.NewClient("Artem", time.Date(1999, 10, 10, 0, 0, 0, 0, time.UTC), "+7888888")
 
 				f.clientRepo.EXPECT().FindByID(args.req.ID).Return(client, nil)
 				client.Name = args.req.Name

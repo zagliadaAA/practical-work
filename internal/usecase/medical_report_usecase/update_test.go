@@ -2,6 +2,7 @@ package medical_report_usecase
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 	"time"
 
@@ -27,8 +28,12 @@ func TestUpdateUseCase(t *testing.T) {
 		req UpdateReportReq
 	}
 
-	now := time.Now()
-	formattedTime := now.Format("02.01.2006 15:04")
+	now := time.Now().UTC()
+	dateStr := now.Format("02.01.2006 15:04")
+	createdAt, err := time.Parse("02.01.2006 15:04", dateStr)
+	if err != nil {
+		fmt.Println("не получилось преобразовать дату")
+	}
 
 	//тесты
 	tests := []struct {
@@ -51,7 +56,7 @@ func TestUpdateUseCase(t *testing.T) {
 				IDClient:   4,
 				DoctorName: "Ложкин В",
 				Diagnosis:  "A77.7",
-				CreatedAt:  formattedTime,
+				CreatedAt:  createdAt,
 			},
 			before: func(f fields, args args) {
 				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4)

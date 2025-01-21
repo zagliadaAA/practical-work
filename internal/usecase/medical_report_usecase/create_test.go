@@ -2,6 +2,7 @@ package medical_report_usecase
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 	"time"
 
@@ -27,8 +28,12 @@ func TestCreateUseCase(t *testing.T) {
 		req CreateMedicalReportReq
 	}
 
-	now := time.Now()
-	formattedTime := now.Format("02.01.2006 15:04")
+	now := time.Now().UTC()
+	dateStr := now.Format("02.01.2006 15:04")
+	createdAt, err := time.Parse("02.01.2006 15:04", dateStr)
+	if err != nil {
+		fmt.Println("не получилось преобразовать дату")
+	}
 
 	//тесты
 	tests := []struct {
@@ -50,11 +55,11 @@ func TestCreateUseCase(t *testing.T) {
 			want: &domain.MedicalReport{
 				DoctorName: "Ложкин",
 				Diagnosis:  "A77",
-				CreatedAt:  formattedTime,
+				CreatedAt:  createdAt,
 				IDClient:   4,
 			},
 			before: func(f fields, args args) {
-				client := domain.NewClient("Artem", "30.12.1999", "+70000000000")
+				client := domain.NewClient("Artem", time.Date(1999, 12, 10, 0, 0, 0, 0, time.UTC), "+70000000000")
 				client.ID = args.req.IDClient
 
 				f.clientRepo.EXPECT().FindByID(args.req.IDClient).Return(client, nil)
@@ -87,7 +92,7 @@ func TestCreateUseCase(t *testing.T) {
 			},
 			wantErr: errTest,
 			before: func(f fields, args args) {
-				client := domain.NewClient("Artem", "30.12.1999", "+70000000000")
+				client := domain.NewClient("Artem", time.Date(1999, 12, 10, 0, 0, 0, 0, time.UTC), "+70000000000")
 				client.ID = args.req.IDClient
 
 				f.clientRepo.EXPECT().FindByID(args.req.IDClient).Return(client, nil)

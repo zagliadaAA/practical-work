@@ -1,12 +1,11 @@
 package main
 
 import (
-	"errors"
 	"fmt"
+	"time"
 
-	"project2/adapter/repository/medical_report_repository"
 	"project2/cmd/service_provider"
-	"project2/internal/usecase/medical_report_usecase"
+	"project2/internal/usecase/client_usecase"
 )
 
 func main() {
@@ -16,21 +15,29 @@ func main() {
 	sp := service_provider.NewServiceProvider()
 
 	//создание клиента
-	/*_, err := sp.GetClientUseCase().Create(client_usecase.CreateClientReq{
-		Name:        "Artem",
-		BDate:       "30.12.1999",
-		PhoneNumber: "89085538251",
+	bDateClient, err := convertDate("11.11.1800")
+	if err != nil {
+		panic(err)
+	}
+	_, err = sp.GetClientUseCase().Create(client_usecase.CreateClientReq{
+		Name:        "Gosha",
+		BDate:       bDateClient,
+		PhoneNumber: "8908542251",
 	})
 	if err != nil {
 		panic(err)
 	}
 
 	//изменение клиента
+	/*bDateClient, err := convertDate("12.12.2000")
+	if err != nil {
+		panic(err)
+	}
 	_, err = sp.GetClientUseCase().Update(client_usecase.UpdateClientReq{
-		ID:          23,
-		Name:        "Vika",
-		BDate:       "30.12.1999",
-		PhoneNumber: "89085538251",
+		ID:          24,
+		Name:        "Lena",
+		BDate:       bDateClient,
+		PhoneNumber: "89086338251",
 	})
 	if err != nil {
 		if errors.Is(err, client_repository.ErrClientNotFound) {
@@ -38,33 +45,19 @@ func main() {
 		} else {
 			panic(err)
 		}
-	}
+	}*/
 
 	//удаление клиента
-	err = sp.GetClientUseCase().Delete(22)
+	/*err := sp.GetClientUseCase().Delete(24)
 	if err != nil {
 		panic(err)
 	}*/
 
 	//добавление диагноза для клиента
 	/*_, err := sp.GetMedicalReportUseCase().Create(medical_report_usecase.CreateMedicalReportReq{
-		IDClient:   24,
+		IDClient:   25,
 		DoctorName: "Доктор Вася",
-		Diagnosis:  "F20.5",
-	})
-	if err != nil {
-		if errors.Is(err, client_repository.ErrClientNotFound) {
-			fmt.Println("create report for client: client does not exist")
-		} else {
-			panic(err)
-		}
-	}
-
-	//добавление диагноза для клиента
-	_, err = sp.GetMedicalReportUseCase().Create(medical_report_usecase.CreateMedicalReportReq{
-		IDClient:   23,
-		DoctorName: "Доктор Вася",
-		Diagnosis:  "A10.2",
+		Diagnosis:  "F100.5",
 	})
 	if err != nil {
 		if errors.Is(err, client_repository.ErrClientNotFound) {
@@ -75,16 +68,16 @@ func main() {
 	}*/
 
 	//удаление диагноза для клиента
-	err := sp.GetMedicalReportUseCase().Delete(24)
+	/*err := sp.GetMedicalReportUseCase().Delete(23)
 	if err != nil {
 		panic(err)
-	}
+	}*/
 
 	//изменение диагноза для клиента
-	_, err = sp.GetMedicalReportUseCase().Update(medical_report_usecase.UpdateReportReq{
+	/*_, err := sp.GetMedicalReportUseCase().Update(medical_report_usecase.UpdateReportReq{
 		DoctorName: "Доктор Вася",
-		Diagnosis:  "F20.7",
-		IDClient:   23,
+		Diagnosis:  "F99.7",
+		IDClient:   25,
 	})
 	if err != nil {
 		if errors.Is(err, medical_report_repository.ErrReportNotFound) {
@@ -92,7 +85,17 @@ func main() {
 		} else {
 			panic(err)
 		}
+	}*/
+}
+
+// Функция для конвертации даты
+func convertDate(dateStr string) (time.Time, error) {
+	parsedDate, err := time.Parse("02.01.2006", dateStr)
+	if err != nil {
+		return parsedDate, fmt.Errorf("failed to parse date: %w", err)
 	}
+
+	return parsedDate, nil
 }
 
 /*
