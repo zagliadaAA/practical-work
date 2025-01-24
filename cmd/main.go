@@ -1,11 +1,13 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
+	"project2/adapter/repository/medical_report_repository"
 	"project2/cmd/service_provider"
-	"project2/internal/usecase/client_usecase"
+	"project2/internal/usecase/medical_report_usecase"
 )
 
 func main() {
@@ -15,18 +17,18 @@ func main() {
 	sp := service_provider.NewServiceProvider()
 
 	//создание клиента
-	bDateClient, err := convertDate("11.11.1800")
+	/*bDateClient, err := convertDate("11.11.1800")
 	if err != nil {
 		panic(err)
 	}
 	_, err = sp.GetClientUseCase().Create(client_usecase.CreateClientReq{
-		Name:        "Gosha",
+		Name:        "Lyda",
 		BDate:       bDateClient,
-		PhoneNumber: "8908542251",
+		PhoneNumber: "89086627184",
 	})
 	if err != nil {
 		panic(err)
-	}
+	}*/
 
 	//изменение клиента
 	/*bDateClient, err := convertDate("12.12.2000")
@@ -34,7 +36,7 @@ func main() {
 		panic(err)
 	}
 	_, err = sp.GetClientUseCase().Update(client_usecase.UpdateClientReq{
-		ID:          24,
+		ID:          23,
 		Name:        "Lena",
 		BDate:       bDateClient,
 		PhoneNumber: "89086338251",
@@ -48,14 +50,14 @@ func main() {
 	}*/
 
 	//удаление клиента
-	/*err := sp.GetClientUseCase().Delete(24)
+	/*err := sp.GetClientUseCase().Delete(23)
 	if err != nil {
 		panic(err)
 	}*/
 
 	//добавление диагноза для клиента
 	/*_, err := sp.GetMedicalReportUseCase().Create(medical_report_usecase.CreateMedicalReportReq{
-		IDClient:   25,
+		IDClient:   26,
 		DoctorName: "Доктор Вася",
 		Diagnosis:  "F100.5",
 	})
@@ -68,16 +70,16 @@ func main() {
 	}*/
 
 	//удаление диагноза для клиента
-	/*err := sp.GetMedicalReportUseCase().Delete(23)
+	/*err := sp.GetMedicalReportUseCase().Delete(25)
 	if err != nil {
 		panic(err)
 	}*/
 
 	//изменение диагноза для клиента
-	/*_, err := sp.GetMedicalReportUseCase().Update(medical_report_usecase.UpdateReportReq{
+	_, err := sp.GetMedicalReportUseCase().Update(medical_report_usecase.UpdateReportReq{
 		DoctorName: "Доктор Вася",
-		Diagnosis:  "F99.7",
-		IDClient:   25,
+		Diagnosis:  "F99",
+		IDClient:   26,
 	})
 	if err != nil {
 		if errors.Is(err, medical_report_repository.ErrReportNotFound) {
@@ -85,7 +87,7 @@ func main() {
 		} else {
 			panic(err)
 		}
-	}*/
+	}
 }
 
 // Функция для конвертации даты

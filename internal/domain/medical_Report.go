@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -13,15 +12,7 @@ type MedicalReport struct {
 	IDClient   int
 }
 
-func NewMedicalReport(doctorName, diagnosis string, clientID int) *MedicalReport {
-	now := time.Now().UTC()
-	dateStr := now.Format("02.01.2006 15:04")
-	createdAt, err := time.Parse("02.01.2006 15:04", dateStr)
-	if err != nil {
-		fmt.Println("не получилось преобразовать дату")
-		return nil
-	}
-
+func NewMedicalReport(doctorName, diagnosis string, clientID int, createdAt time.Time) *MedicalReport {
 	return &MedicalReport{
 		DoctorName: doctorName,
 		Diagnosis:  diagnosis,

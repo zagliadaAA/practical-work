@@ -7,7 +7,7 @@ import (
 
 func (sp *ServiceProvider) GetClientUseCase() *client_usecase.UseCase {
 	if sp.clientUseCase == nil {
-		sp.clientUseCase = client_usecase.NewUseCase(sp.GetClientRepository())
+		sp.clientUseCase = client_usecase.NewUseCase(sp.GetClientRepository(), sp.getTimer())
 	}
 
 	return sp.clientUseCase
@@ -15,7 +15,7 @@ func (sp *ServiceProvider) GetClientUseCase() *client_usecase.UseCase {
 
 func (sp *ServiceProvider) GetMedicalReportUseCase() *medical_report_usecase.UseCase {
 	if sp.medicalReportUseCase == nil {
-		sp.medicalReportUseCase = medical_report_usecase.NewUseCase(sp.GetMedicalReportRepository(), sp.GetClientRepository())
+		sp.medicalReportUseCase = medical_report_usecase.NewUseCase(sp.GetMedicalReportRepository(), sp.GetClientRepository(), sp.getTimer())
 	}
 
 	return sp.medicalReportUseCase

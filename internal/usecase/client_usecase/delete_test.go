@@ -17,11 +17,13 @@ func TestDeleteUseCase(t *testing.T) {
 	//зависимости, которые нужны для теста
 	type fields struct {
 		clientRepo *mocks.ClientRepo
+		timer      *mocks.Timer
 	}
 
 	//данные для теста
 	type args struct {
 		clientID int
+		timer    *mocks.Timer
 	}
 
 	//тесты
@@ -60,10 +62,11 @@ func TestDeleteUseCase(t *testing.T) {
 			//создали зависимости
 			f := fields{
 				clientRepo: mocks.NewClientRepo(t),
+				timer:      mocks.NewTimer(t),
 			}
 			tt.before(f, tt.args)
 
-			uc := NewUseCase(f.clientRepo)
+			uc := NewUseCase(f.clientRepo, f.timer)
 
 			//выполнили
 			err := uc.Delete(tt.args.clientID)

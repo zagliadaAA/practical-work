@@ -2,7 +2,6 @@ package medical_report_usecase
 
 import (
 	"errors"
-	"fmt"
 	"testing"
 	"time"
 
@@ -15,24 +14,19 @@ import (
 func TestUpdateUseCase(t *testing.T) {
 	t.Parallel()
 
+	now := time.Now().UTC()
 	errTest := errors.New("error test")
 
 	//зависимости, которые нужны для теста
 	type fields struct {
 		medRepo    *mocks.MedRepo
 		clientRepo *mocks.ClientRepo
+		timer      *mocks.Timer
 	}
 
 	//данные для теста
 	type args struct {
 		req UpdateReportReq
-	}
-
-	now := time.Now().UTC()
-	dateStr := now.Format("02.01.2006 15:04")
-	createdAt, err := time.Parse("02.01.2006 15:04", dateStr)
-	if err != nil {
-		fmt.Println("не получилось преобразовать дату")
 	}
 
 	//тесты
@@ -56,10 +50,10 @@ func TestUpdateUseCase(t *testing.T) {
 				IDClient:   4,
 				DoctorName: "Ложкин В",
 				Diagnosis:  "A77.7",
-				CreatedAt:  createdAt,
+				CreatedAt:  now,
 			},
 			before: func(f fields, args args) {
-				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4)
+				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now)
 
 				f.medRepo.EXPECT().GetReportByIDClient(args.req.IDClient).Return(report, nil)
 				report.DoctorName = args.req.DoctorName
@@ -92,7 +86,7 @@ func TestUpdateUseCase(t *testing.T) {
 			},
 			wantErr: errTest,
 			before: func(f fields, args args) {
-				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4)
+				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now)
 
 				f.medRepo.EXPECT().GetReportByIDClient(args.req.IDClient).Return(report, nil)
 				report.DoctorName = args.req.DoctorName
@@ -111,10 +105,11 @@ func TestUpdateUseCase(t *testing.T) {
 			f := fields{
 				medRepo:    mocks.NewMedRepo(t),
 				clientRepo: mocks.NewClientRepo(t),
+				timer:      mocks.NewTimer(t),
 			}
 			tt.before(f, tt.args)
 
-			uc := NewUseCase(f.medRepo, f.clientRepo)
+			uc := NewUseCase(f.medRepo, f.clientRepo, f.timer)
 
 			//выполнили
 			e, err := uc.Update(tt.args.req)

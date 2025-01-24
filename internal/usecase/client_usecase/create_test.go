@@ -14,11 +14,13 @@ import (
 func TestCreateUseCase(t *testing.T) {
 	t.Parallel()
 
+	now := time.Now()
 	errTest := errors.New("error test")
 
 	//зависимости, которые нужны для теста
 	type fields struct {
 		clientRepo *mocks.ClientRepo
+		timer      *mocks.Timer
 	}
 
 	//данные для теста
@@ -39,13 +41,13 @@ func TestCreateUseCase(t *testing.T) {
 			args: args{
 				req: CreateClientReq{
 					Name:        "Poly",
-					BDate:       time.Date(1999, 12, 10, 0, 0, 0, 0, time.UTC),
+					BDate:       now,
 					PhoneNumber: "+7999999",
 				},
 			},
 			want: &domain.Client{
 				Name:        "Poly",
-				BDate:       time.Date(1999, 12, 10, 0, 0, 0, 0, time.UTC),
+				BDate:       now,
 				PhoneNumber: "+7999999",
 			},
 			before: func(f fields, args args) {
@@ -58,7 +60,7 @@ func TestCreateUseCase(t *testing.T) {
 			args: args{
 				req: CreateClientReq{
 					Name:        "Poly",
-					BDate:       time.Date(1999, 12, 10, 0, 0, 0, 0, time.UTC),
+					BDate:       now,
 					PhoneNumber: "+7999999",
 				},
 			},
@@ -78,10 +80,11 @@ func TestCreateUseCase(t *testing.T) {
 			//создали зависимости
 			f := fields{
 				clientRepo: mocks.NewClientRepo(t),
+				timer:      mocks.NewTimer(t),
 			}
 			tt.before(f, tt.args)
 
-			uc := NewUseCase(f.clientRepo)
+			uc := NewUseCase(f.clientRepo, f.timer)
 
 			//выполнили
 			e, err := uc.Create(tt.args.req)
