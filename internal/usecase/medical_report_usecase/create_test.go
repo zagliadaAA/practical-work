@@ -14,21 +14,20 @@ import (
 func TestCreateUseCase(t *testing.T) {
 	t.Parallel()
 
+	now := time.Now().UTC()
 	errTest := errors.New("error test")
 
 	//зависимости, которые нужны для теста
 	type fields struct {
 		medRepo    *mocks.MedRepo
 		clientRepo *mocks.ClientRepo
+		timer      *mocks.Timer
 	}
 
 	//данные для теста
 	type args struct {
 		req CreateMedicalReportReq
 	}
-
-	now := time.Now()
-	formattedTime := now.Format("02.01.2006 15:04")
 
 	//тесты
 	tests := []struct {
@@ -50,15 +49,18 @@ func TestCreateUseCase(t *testing.T) {
 			want: &domain.MedicalReport{
 				DoctorName: "Ложкин",
 				Diagnosis:  "A77",
-				CreatedAt:  formattedTime,
+				CreatedAt:  now,
+				UpdatedAt:  now,
 				IDClient:   4,
 			},
 			before: func(f fields, args args) {
-				client := domain.NewClient("Artem", "30.12.1999", "+70000000000")
+				f.timer.EXPECT().Now().Return(now)
+
+				client := domain.NewClient("Artem", time.Date(1999, 12, 10, 0, 0, 0, 0, time.UTC), "+70000000000", now)
 				client.ID = args.req.IDClient
 
 				f.clientRepo.EXPECT().FindByID(args.req.IDClient).Return(client, nil)
-				report := domain.NewMedicalReport(args.req.DoctorName, args.req.Diagnosis, client.ID)
+				report := domain.NewMedicalReport(args.req.DoctorName, args.req.Diagnosis, client.ID, now, now)
 				f.medRepo.EXPECT().Create(report).Return(report, nil)
 			},
 		},
@@ -87,11 +89,13 @@ func TestCreateUseCase(t *testing.T) {
 			},
 			wantErr: errTest,
 			before: func(f fields, args args) {
-				client := domain.NewClient("Artem", "30.12.1999", "+70000000000")
+				f.timer.EXPECT().Now().Return(now)
+
+				client := domain.NewClient("Artem", time.Date(1999, 12, 10, 0, 0, 0, 0, time.UTC), "+70000000000", now)
 				client.ID = args.req.IDClient
 
 				f.clientRepo.EXPECT().FindByID(args.req.IDClient).Return(client, nil)
-				report := domain.NewMedicalReport(args.req.DoctorName, args.req.Diagnosis, client.ID)
+				report := domain.NewMedicalReport(args.req.DoctorName, args.req.Diagnosis, client.ID, now, now)
 				f.medRepo.EXPECT().Create(report).Return(nil, errTest)
 			},
 		},
@@ -106,10 +110,11 @@ func TestCreateUseCase(t *testing.T) {
 			f := fields{
 				medRepo:    mocks.NewMedRepo(t),
 				clientRepo: mocks.NewClientRepo(t),
+				timer:      mocks.NewTimer(t),
 			}
 			tt.before(f, tt.args)
 
-			uc := NewUseCase(f.medRepo, f.clientRepo)
+			uc := NewUseCase(f.medRepo, f.clientRepo, f.timer)
 
 			//выполнили
 			e, err := uc.Create(tt.args.req)

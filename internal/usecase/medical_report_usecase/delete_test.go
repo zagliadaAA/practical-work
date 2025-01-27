@@ -3,6 +3,7 @@ package medical_report_usecase
 import (
 	"errors"
 	"testing"
+	"time"
 
 	"project2/internal/domain"
 	"project2/internal/usecase/medical_report_usecase/mocks"
@@ -13,12 +14,14 @@ import (
 func TestDeleteUseCase(t *testing.T) {
 	t.Parallel()
 
+	now := time.Now().UTC()
 	errTest := errors.New("error test")
 
 	//зависимости, которые нужны для теста
 	type fields struct {
 		medRepo    *mocks.MedRepo
 		clientRepo *mocks.ClientRepo
+		timer      *mocks.Timer
 	}
 
 	//данные для теста
@@ -41,7 +44,7 @@ func TestDeleteUseCase(t *testing.T) {
 				reportID: 2,
 			},
 			before: func(f fields, args args) {
-				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4)
+				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now, now)
 				report.ID = args.reportID
 
 				f.medRepo.EXPECT().GetReportByIDClient(args.clientID).Return(report, nil)
@@ -67,7 +70,7 @@ func TestDeleteUseCase(t *testing.T) {
 			},
 			wantErr: errTest,
 			before: func(f fields, args args) {
-				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4)
+				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now, now)
 				report.ID = args.reportID
 
 				f.medRepo.EXPECT().GetReportByIDClient(args.clientID).Return(report, nil)
@@ -85,10 +88,11 @@ func TestDeleteUseCase(t *testing.T) {
 			f := fields{
 				medRepo:    mocks.NewMedRepo(t),
 				clientRepo: mocks.NewClientRepo(t),
+				timer:      mocks.NewTimer(t),
 			}
 			tt.before(f, tt.args)
 
-			uc := NewUseCase(f.medRepo, f.clientRepo)
+			uc := NewUseCase(f.medRepo, f.clientRepo, f.timer)
 
 			//выполнили
 			err := uc.Delete(tt.args.clientID)

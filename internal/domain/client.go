@@ -1,17 +1,23 @@
 package domain
 
+import (
+	"time"
+)
+
 type Client struct {
 	ID          int
 	Name        string
-	BDate       string
+	BDate       time.Time
 	PhoneNumber string
+	UpdatedAt   time.Time
 }
 
-func NewClient(name, bDate, phoneNumber string) *Client {
+func NewClient(name string, bDate time.Time, phoneNumber string, updatedAt time.Time) *Client {
 	return &Client{
 		Name:        name,
 		BDate:       bDate,
 		PhoneNumber: phoneNumber,
+		UpdatedAt:   updatedAt,
 	}
 }
 

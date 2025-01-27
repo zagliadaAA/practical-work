@@ -3,10 +3,10 @@ package main
 import (
 	"errors"
 	"fmt"
+	"time"
 
-	"project2/adapter/repository/client_repository"
 	"project2/adapter/repository/medical_report_repository"
-	"project2/internal/usecase/client_usecase"
+	"project2/cmd/service_provider"
 	"project2/internal/usecase/medical_report_usecase"
 )
 
@@ -14,51 +14,32 @@ func main() {
 
 	fmt.Println("-----\n")
 
-	repo := client_repository.NewRepo()
-	uc := client_usecase.NewUseCase(repo)
-	medicalRepo := medical_report_repository.NewMedRepo()
-	medUc := medical_report_usecase.NewUseCase(medicalRepo, repo)
+	sp := service_provider.NewServiceProvider()
 
 	//создание клиента
-	_, err := uc.Create(client_usecase.CreateClientReq{
-		Name:        "Artem",
-		BDate:       "30.12.1999",
-		PhoneNumber: "89085538251",
-	})
+	/*bDateClient, err := convertDate("10.10.2000")
 	if err != nil {
 		panic(err)
 	}
-
-	//создание клиента
-	_, err = uc.Create(client_usecase.CreateClientReq{
-		Name:        "Boba",
-		BDate:       "01.01.1999",
-		PhoneNumber: "89087732819",
+	_, err = sp.GetClientUseCase().Create(client_usecase.CreateClientReq{
+		Name:        "Dima",
+		BDate:       bDateClient,
+		PhoneNumber: "89084473823",
 	})
 	if err != nil {
 		panic(err)
-	}
-
-	//создание клиента
-	_, err = uc.Create(client_usecase.CreateClientReq{
-		Name:        "Liza",
-		BDate:       "02.02.1998",
-		PhoneNumber: "8908846195",
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	//печать всех клиентов
-	clients := repo.GetAll()
-	fmt.Println(clients)
+	}*/
 
 	//изменение клиента
-	_, err = uc.Update(client_usecase.UpdateClientReq{
-		ID:          1,
-		Name:        "AArtem",
-		BDate:       "30.12.1999",
-		PhoneNumber: "89085538251",
+	/*bDateClient, err := convertDate("12.12.2000")
+	if err != nil {
+		panic(err)
+	}
+	_, err = sp.GetClientUseCase().Update(client_usecase.UpdateClientReq{
+		ID:          2,
+		Name:        "Lena",
+		BDate:       bDateClient,
+		PhoneNumber: "89086338251",
 	})
 	if err != nil {
 		if errors.Is(err, client_repository.ErrClientNotFound) {
@@ -66,19 +47,19 @@ func main() {
 		} else {
 			panic(err)
 		}
-	}
+	}*/
 
 	//удаление клиента
-	err = uc.Delete(2)
+	/*err := sp.GetClientUseCase().Delete(2)
 	if err != nil {
 		panic(err)
-	}
+	}*/
 
 	//добавление диагноза для клиента
-	_, err = medUc.Create(medical_report_usecase.CreateMedicalReportReq{
+	/*_, err := sp.GetMedicalReportUseCase().Create(medical_report_usecase.CreateMedicalReportReq{
 		IDClient:   1,
 		DoctorName: "Доктор Вася",
-		Diagnosis:  "F20.5",
+		Diagnosis:  "Q18.88",
 	})
 	if err != nil {
 		if errors.Is(err, client_repository.ErrClientNotFound) {
@@ -86,37 +67,19 @@ func main() {
 		} else {
 			panic(err)
 		}
-	}
-
-	//добавление диагноза для клиента
-	_, err = medUc.Create(medical_report_usecase.CreateMedicalReportReq{
-		IDClient:   3,
-		DoctorName: "Доктор Вася",
-		Diagnosis:  "F20.2",
-	})
-	if err != nil {
-		if errors.Is(err, client_repository.ErrClientNotFound) {
-			fmt.Println("create report for client: client does not exist")
-		} else {
-			panic(err)
-		}
-	}
-
-	// Печатаем все диагнозы
-	reports := medicalRepo.GetAll()
-	fmt.Println(reports)
+	}*/
 
 	//удаление диагноза для клиента
-	err = medUc.Delete(1)
+	/*err := sp.GetMedicalReportUseCase().Delete(25)
 	if err != nil {
 		panic(err)
-	}
+	}*/
 
 	//изменение диагноза для клиента
-	_, err = medUc.Update(medical_report_usecase.UpdateReportReq{
+	_, err := sp.GetMedicalReportUseCase().Update(medical_report_usecase.UpdateReportReq{
 		DoctorName: "Доктор Вася",
-		Diagnosis:  "F20.7",
-		IDClient:   3,
+		Diagnosis:  "F111",
+		IDClient:   1,
 	})
 	if err != nil {
 		if errors.Is(err, medical_report_repository.ErrReportNotFound) {
@@ -125,14 +88,16 @@ func main() {
 			panic(err)
 		}
 	}
+}
 
-	// Печатаем всех клиентов
-	clients = repo.GetAll()
-	fmt.Println(clients)
+// Функция для конвертации даты
+func convertDate(dateStr string) (time.Time, error) {
+	parsedDate, err := time.Parse("02.01.2006", dateStr)
+	if err != nil {
+		return parsedDate, fmt.Errorf("failed to parse date: %w", err)
+	}
 
-	// Печатаем все диагнозы
-	reports = medicalRepo.GetAll()
-	fmt.Println(reports)
+	return parsedDate, nil
 }
 
 /*

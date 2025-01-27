@@ -2,6 +2,7 @@ package client_usecase
 
 import (
 	"fmt"
+	"time"
 
 	"project2/internal/domain"
 )
@@ -9,7 +10,7 @@ import (
 type UpdateClientReq struct { //Вспомогательный тип для создания без ID
 	ID          int
 	Name        string
-	BDate       string
+	BDate       time.Time
 	PhoneNumber string
 }
 
@@ -22,6 +23,7 @@ func (uc *UseCase) Update(req UpdateClientReq) (*domain.Client, error) {
 	client.Name = req.Name
 	client.BDate = req.BDate
 	client.PhoneNumber = req.PhoneNumber
+	client.UpdatedAt = uc.timer.Now()
 
 	clientUpdate, err := uc.clientRepo.Update(client)
 	if err != nil {

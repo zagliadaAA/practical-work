@@ -18,7 +18,7 @@ func (uc *UseCase) Create(req CreateMedicalReportReq) (*domain.MedicalReport, er
 		return nil, fmt.Errorf("clientRepo.FindByID: %w", err)
 	}
 
-	report := domain.NewMedicalReport(req.DoctorName, req.Diagnosis, client.ID)
+	report := domain.NewMedicalReport(req.DoctorName, req.Diagnosis, client.ID, uc.timer.Now(), uc.timer.Now())
 
 	reportCreate, err := uc.medRepo.Create(report)
 	if err != nil {

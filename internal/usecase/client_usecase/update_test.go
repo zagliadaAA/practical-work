@@ -3,6 +3,7 @@ package client_usecase
 import (
 	"errors"
 	"testing"
+	"time"
 
 	"project2/internal/domain"
 	"project2/internal/usecase/client_usecase/mocks"
@@ -13,11 +14,13 @@ import (
 func TestUpdateUseCase(t *testing.T) {
 	t.Parallel()
 
+	now := time.Now().UTC()
 	errTest := errors.New("error test")
 
 	//зависимости, которые нужны для теста
 	type fields struct {
 		clientRepo *mocks.ClientRepo
+		timer      *mocks.Timer
 	}
 
 	//данные для теста
@@ -39,17 +42,20 @@ func TestUpdateUseCase(t *testing.T) {
 				req: UpdateClientReq{
 					ID:          4,
 					Name:        "Poly",
-					BDate:       "20.10.2010",
+					BDate:       now,
 					PhoneNumber: "+7999999",
 				},
 			},
 			want: &domain.Client{
 				Name:        "Poly",
-				BDate:       "20.10.2010",
+				BDate:       now,
 				PhoneNumber: "+7999999",
+				UpdatedAt:   now,
 			},
 			before: func(f fields, args args) {
-				client := domain.NewClient("Artem", "30.12.1999", "+7888888")
+				f.timer.EXPECT().Now().Return(now)
+
+				client := domain.NewClient("Artem", now, "+7888888", now)
 
 				f.clientRepo.EXPECT().FindByID(args.req.ID).Return(client, nil)
 				client.Name = args.req.Name
@@ -64,7 +70,7 @@ func TestUpdateUseCase(t *testing.T) {
 				req: UpdateClientReq{
 					ID:          4,
 					Name:        "Poly",
-					BDate:       "20.10.2010",
+					BDate:       now,
 					PhoneNumber: "+7999999",
 				},
 			},
@@ -79,13 +85,15 @@ func TestUpdateUseCase(t *testing.T) {
 				req: UpdateClientReq{
 					ID:          4,
 					Name:        "Poly",
-					BDate:       "20.10.2010",
+					BDate:       now,
 					PhoneNumber: "+7999999",
 				},
 			},
 			wantErr: errTest,
 			before: func(f fields, args args) {
-				client := domain.NewClient("Artem", "30.12.1999", "+7888888")
+				f.timer.EXPECT().Now().Return(now)
+
+				client := domain.NewClient("Artem", now, "+7888888", now)
 
 				f.clientRepo.EXPECT().FindByID(args.req.ID).Return(client, nil)
 				client.Name = args.req.Name
@@ -104,10 +112,11 @@ func TestUpdateUseCase(t *testing.T) {
 			//создали зависимости
 			f := fields{
 				clientRepo: mocks.NewClientRepo(t),
+				timer:      mocks.NewTimer(t),
 			}
 			tt.before(f, tt.args)
 
-			uc := NewUseCase(f.clientRepo)
+			uc := NewUseCase(f.clientRepo, f.timer)
 
 			//выполнили
 			e, err := uc.Update(tt.args.req)

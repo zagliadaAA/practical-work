@@ -3,6 +3,7 @@ package client_usecase
 import (
 	"errors"
 	"testing"
+	"time"
 
 	"project2/internal/domain"
 	"project2/internal/usecase/client_usecase/mocks"
@@ -13,11 +14,13 @@ import (
 func TestCreateUseCase(t *testing.T) {
 	t.Parallel()
 
+	now := time.Now()
 	errTest := errors.New("error test")
 
 	//зависимости, которые нужны для теста
 	type fields struct {
 		clientRepo *mocks.ClientRepo
+		timer      *mocks.Timer
 	}
 
 	//данные для теста
@@ -38,17 +41,20 @@ func TestCreateUseCase(t *testing.T) {
 			args: args{
 				req: CreateClientReq{
 					Name:        "Poly",
-					BDate:       "20.10.2010",
+					BDate:       now,
 					PhoneNumber: "+7999999",
 				},
 			},
 			want: &domain.Client{
 				Name:        "Poly",
-				BDate:       "20.10.2010",
+				BDate:       now,
 				PhoneNumber: "+7999999",
+				UpdatedAt:   now,
 			},
 			before: func(f fields, args args) {
-				client := domain.NewClient(args.req.Name, args.req.BDate, args.req.PhoneNumber)
+				f.timer.EXPECT().Now().Return(now)
+
+				client := domain.NewClient(args.req.Name, args.req.BDate, args.req.PhoneNumber, now)
 				f.clientRepo.EXPECT().Create(client).Return(client, nil)
 			},
 		},
@@ -57,13 +63,15 @@ func TestCreateUseCase(t *testing.T) {
 			args: args{
 				req: CreateClientReq{
 					Name:        "Poly",
-					BDate:       "20.10.2010",
+					BDate:       now,
 					PhoneNumber: "+7999999",
 				},
 			},
 			wantErr: errTest,
 			before: func(f fields, args args) {
-				client := domain.NewClient(args.req.Name, args.req.BDate, args.req.PhoneNumber)
+				f.timer.EXPECT().Now().Return(now)
+
+				client := domain.NewClient(args.req.Name, args.req.BDate, args.req.PhoneNumber, now)
 				f.clientRepo.EXPECT().Create(client).Return(nil, errTest)
 			},
 		},
@@ -77,10 +85,11 @@ func TestCreateUseCase(t *testing.T) {
 			//создали зависимости
 			f := fields{
 				clientRepo: mocks.NewClientRepo(t),
+				timer:      mocks.NewTimer(t),
 			}
 			tt.before(f, tt.args)
 
-			uc := NewUseCase(f.clientRepo)
+			uc := NewUseCase(f.clientRepo, f.timer)
 
 			//выполнили
 			e, err := uc.Create(tt.args.req)
