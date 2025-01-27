@@ -8,9 +8,9 @@ import (
 )
 
 func (r *Repo) Create(c *domain.Client) (*domain.Client, error) {
-	query := "INSERT INTO clients(name, b_date, phone_number) VALUES ($1, $2, $3) RETURNING id;"
+	query := "INSERT INTO clients(name, b_date, phone_number, updated_at) VALUES ($1, $2, $3, $4) RETURNING id;"
 
-	err := r.cluster.Conn.QueryRow(context.Background(), query, c.Name, c.BDate, c.PhoneNumber).Scan(&c.ID)
+	err := r.cluster.Conn.QueryRow(context.Background(), query, c.Name, c.BDate, c.PhoneNumber, c.UpdatedAt).Scan(&c.ID)
 
 	if err != nil {
 		return nil, fmt.Errorf("createClient: error creating client: %w", err)

@@ -23,6 +23,7 @@ func (uc *UseCase) Update(req UpdateClientReq) (*domain.Client, error) {
 	client.Name = req.Name
 	client.BDate = req.BDate
 	client.PhoneNumber = req.PhoneNumber
+	client.UpdatedAt = uc.timer.Now()
 
 	clientUpdate, err := uc.clientRepo.Update(client)
 	if err != nil {

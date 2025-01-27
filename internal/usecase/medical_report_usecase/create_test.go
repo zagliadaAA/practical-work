@@ -50,16 +50,17 @@ func TestCreateUseCase(t *testing.T) {
 				DoctorName: "Ложкин",
 				Diagnosis:  "A77",
 				CreatedAt:  now,
+				UpdatedAt:  now,
 				IDClient:   4,
 			},
 			before: func(f fields, args args) {
 				f.timer.EXPECT().Now().Return(now)
 
-				client := domain.NewClient("Artem", time.Date(1999, 12, 10, 0, 0, 0, 0, time.UTC), "+70000000000")
+				client := domain.NewClient("Artem", time.Date(1999, 12, 10, 0, 0, 0, 0, time.UTC), "+70000000000", now)
 				client.ID = args.req.IDClient
 
 				f.clientRepo.EXPECT().FindByID(args.req.IDClient).Return(client, nil)
-				report := domain.NewMedicalReport(args.req.DoctorName, args.req.Diagnosis, client.ID, now)
+				report := domain.NewMedicalReport(args.req.DoctorName, args.req.Diagnosis, client.ID, now, now)
 				f.medRepo.EXPECT().Create(report).Return(report, nil)
 			},
 		},
@@ -74,8 +75,6 @@ func TestCreateUseCase(t *testing.T) {
 			},
 			wantErr: errTest,
 			before: func(f fields, args args) {
-				f.timer.EXPECT().Now().Return(now)
-
 				f.clientRepo.EXPECT().FindByID(args.req.IDClient).Return(nil, errTest)
 			},
 		},
@@ -92,11 +91,11 @@ func TestCreateUseCase(t *testing.T) {
 			before: func(f fields, args args) {
 				f.timer.EXPECT().Now().Return(now)
 
-				client := domain.NewClient("Artem", time.Date(1999, 12, 10, 0, 0, 0, 0, time.UTC), "+70000000000")
+				client := domain.NewClient("Artem", time.Date(1999, 12, 10, 0, 0, 0, 0, time.UTC), "+70000000000", now)
 				client.ID = args.req.IDClient
 
 				f.clientRepo.EXPECT().FindByID(args.req.IDClient).Return(client, nil)
-				report := domain.NewMedicalReport(args.req.DoctorName, args.req.Diagnosis, client.ID, now)
+				report := domain.NewMedicalReport(args.req.DoctorName, args.req.Diagnosis, client.ID, now, now)
 				f.medRepo.EXPECT().Create(report).Return(nil, errTest)
 			},
 		},

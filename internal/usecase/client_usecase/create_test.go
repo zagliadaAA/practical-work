@@ -49,9 +49,12 @@ func TestCreateUseCase(t *testing.T) {
 				Name:        "Poly",
 				BDate:       now,
 				PhoneNumber: "+7999999",
+				UpdatedAt:   now,
 			},
 			before: func(f fields, args args) {
-				client := domain.NewClient(args.req.Name, args.req.BDate, args.req.PhoneNumber)
+				f.timer.EXPECT().Now().Return(now)
+
+				client := domain.NewClient(args.req.Name, args.req.BDate, args.req.PhoneNumber, now)
 				f.clientRepo.EXPECT().Create(client).Return(client, nil)
 			},
 		},
@@ -66,7 +69,9 @@ func TestCreateUseCase(t *testing.T) {
 			},
 			wantErr: errTest,
 			before: func(f fields, args args) {
-				client := domain.NewClient(args.req.Name, args.req.BDate, args.req.PhoneNumber)
+				f.timer.EXPECT().Now().Return(now)
+
+				client := domain.NewClient(args.req.Name, args.req.BDate, args.req.PhoneNumber, now)
 				f.clientRepo.EXPECT().Create(client).Return(nil, errTest)
 			},
 		},

@@ -17,14 +17,14 @@ func main() {
 	sp := service_provider.NewServiceProvider()
 
 	//создание клиента
-	/*bDateClient, err := convertDate("11.11.1800")
+	/*bDateClient, err := convertDate("10.10.2000")
 	if err != nil {
 		panic(err)
 	}
 	_, err = sp.GetClientUseCase().Create(client_usecase.CreateClientReq{
-		Name:        "Lyda",
+		Name:        "Dima",
 		BDate:       bDateClient,
-		PhoneNumber: "89086627184",
+		PhoneNumber: "89084473823",
 	})
 	if err != nil {
 		panic(err)
@@ -36,7 +36,7 @@ func main() {
 		panic(err)
 	}
 	_, err = sp.GetClientUseCase().Update(client_usecase.UpdateClientReq{
-		ID:          23,
+		ID:          2,
 		Name:        "Lena",
 		BDate:       bDateClient,
 		PhoneNumber: "89086338251",
@@ -50,16 +50,16 @@ func main() {
 	}*/
 
 	//удаление клиента
-	/*err := sp.GetClientUseCase().Delete(23)
+	/*err := sp.GetClientUseCase().Delete(2)
 	if err != nil {
 		panic(err)
 	}*/
 
 	//добавление диагноза для клиента
 	/*_, err := sp.GetMedicalReportUseCase().Create(medical_report_usecase.CreateMedicalReportReq{
-		IDClient:   26,
+		IDClient:   1,
 		DoctorName: "Доктор Вася",
-		Diagnosis:  "F100.5",
+		Diagnosis:  "Q18.88",
 	})
 	if err != nil {
 		if errors.Is(err, client_repository.ErrClientNotFound) {
@@ -78,8 +78,8 @@ func main() {
 	//изменение диагноза для клиента
 	_, err := sp.GetMedicalReportUseCase().Update(medical_report_usecase.UpdateReportReq{
 		DoctorName: "Доктор Вася",
-		Diagnosis:  "F99",
-		IDClient:   26,
+		Diagnosis:  "F111",
+		IDClient:   1,
 	})
 	if err != nil {
 		if errors.Is(err, medical_report_repository.ErrReportNotFound) {

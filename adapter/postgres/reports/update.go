@@ -8,11 +8,9 @@ import (
 )
 
 func (r *MedRepo) Update(mr *domain.MedicalReport) (*domain.MedicalReport, error) {
-	query := "UPDATE reports SET doctor_name = $1, diagnosis = $2 WHERE id = $3 " +
-		"RETURNING id, doctor_name, diagnosis, created_at, id_client;"
+	query := "UPDATE reports SET doctor_name = $1, diagnosis = $2, updated_at = $3 WHERE id = $4;"
 
-	err := r.cluster.Conn.QueryRow(context.Background(), query,
-		mr.DoctorName, mr.Diagnosis, mr.ID).Scan(&mr.ID, &mr.DoctorName, &mr.Diagnosis, &mr.CreatedAt, &mr.IDClient)
+	_, err := r.cluster.Conn.Exec(context.Background(), query, mr.DoctorName, mr.Diagnosis, mr.UpdatedAt, mr.ID)
 
 	if err != nil {
 		return nil, fmt.Errorf("updateReport: error updating report: %w", err)

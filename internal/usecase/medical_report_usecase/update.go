@@ -20,6 +20,7 @@ func (uc *UseCase) Update(req UpdateReportReq) (*domain.MedicalReport, error) {
 
 	report.DoctorName = req.DoctorName
 	report.Diagnosis = req.Diagnosis
+	report.UpdatedAt = uc.timer.Now()
 
 	reportUpdate, err := uc.medRepo.Update(report)
 	if err != nil {

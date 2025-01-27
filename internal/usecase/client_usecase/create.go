@@ -14,7 +14,7 @@ type CreateClientReq struct { //Вспомогательный тип для с�
 }
 
 func (uc *UseCase) Create(req CreateClientReq) (*domain.Client, error) {
-	client := domain.NewClient(req.Name, req.BDate, req.PhoneNumber)
+	client := domain.NewClient(req.Name, req.BDate, req.PhoneNumber, uc.timer.Now())
 
 	clientCreate, err := uc.clientRepo.Create(client)
 	if err != nil {

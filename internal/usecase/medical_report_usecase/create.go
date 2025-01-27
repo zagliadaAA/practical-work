@@ -13,14 +13,12 @@ type CreateMedicalReportReq struct { //Вспомогательный тип д�
 }
 
 func (uc *UseCase) Create(req CreateMedicalReportReq) (*domain.MedicalReport, error) {
-	createdAt := uc.timer.Now()
-
 	client, err := uc.clientRepo.FindByID(req.IDClient)
 	if err != nil {
 		return nil, fmt.Errorf("clientRepo.FindByID: %w", err)
 	}
 
-	report := domain.NewMedicalReport(req.DoctorName, req.Diagnosis, client.ID, createdAt)
+	report := domain.NewMedicalReport(req.DoctorName, req.Diagnosis, client.ID, uc.timer.Now(), uc.timer.Now())
 
 	reportCreate, err := uc.medRepo.Create(report)
 	if err != nil {

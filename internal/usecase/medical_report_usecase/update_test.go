@@ -51,9 +51,12 @@ func TestUpdateUseCase(t *testing.T) {
 				DoctorName: "Ложкин В",
 				Diagnosis:  "A77.7",
 				CreatedAt:  now,
+				UpdatedAt:  now,
 			},
 			before: func(f fields, args args) {
-				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now)
+				f.timer.EXPECT().Now().Return(now)
+
+				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now, now)
 
 				f.medRepo.EXPECT().GetReportByIDClient(args.req.IDClient).Return(report, nil)
 				report.DoctorName = args.req.DoctorName
@@ -86,7 +89,9 @@ func TestUpdateUseCase(t *testing.T) {
 			},
 			wantErr: errTest,
 			before: func(f fields, args args) {
-				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now)
+				f.timer.EXPECT().Now().Return(now)
+
+				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now, now)
 
 				f.medRepo.EXPECT().GetReportByIDClient(args.req.IDClient).Return(report, nil)
 				report.DoctorName = args.req.DoctorName

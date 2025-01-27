@@ -44,7 +44,7 @@ func TestDeleteUseCase(t *testing.T) {
 				reportID: 2,
 			},
 			before: func(f fields, args args) {
-				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now)
+				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now, now)
 				report.ID = args.reportID
 
 				f.medRepo.EXPECT().GetReportByIDClient(args.clientID).Return(report, nil)
@@ -70,7 +70,7 @@ func TestDeleteUseCase(t *testing.T) {
 			},
 			wantErr: errTest,
 			before: func(f fields, args args) {
-				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now)
+				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now, now)
 				report.ID = args.reportID
 
 				f.medRepo.EXPECT().GetReportByIDClient(args.clientID).Return(report, nil)

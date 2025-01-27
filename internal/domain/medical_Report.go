@@ -9,14 +9,16 @@ type MedicalReport struct {
 	DoctorName string
 	Diagnosis  string
 	CreatedAt  time.Time
+	UpdatedAt  time.Time
 	IDClient   int
 }
 
-func NewMedicalReport(doctorName, diagnosis string, clientID int, createdAt time.Time) *MedicalReport {
+func NewMedicalReport(doctorName, diagnosis string, clientID int, createdAt, updatedAt time.Time) *MedicalReport {
 	return &MedicalReport{
 		DoctorName: doctorName,
 		Diagnosis:  diagnosis,
 		CreatedAt:  createdAt,
+		UpdatedAt:  updatedAt,
 		IDClient:   clientID,
 	}
 }
