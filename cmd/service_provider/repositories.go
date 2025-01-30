@@ -3,8 +3,8 @@ package service_provider
 import (
 	"context"
 
-	"project2/adapter/postgres/clients"
-	"project2/adapter/postgres/reports"
+	"project2/internal/adapter/postgres/clients"
+	"project2/internal/adapter/postgres/reports"
 )
 
 func (sp *ServiceProvider) GetClientRepository() *clients.Repo {

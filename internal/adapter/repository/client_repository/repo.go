@@ -2,6 +2,7 @@ package client_repository
 
 import (
 	"errors"
+
 	"project2/internal/domain"
 )
 
