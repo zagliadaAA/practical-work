@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"project2/internal/controller"
-	"project2/internal/usecase/client_usecase"
+	"medicalCenter/internal/controller"
+	"medicalCenter/internal/usecase/client_usecase"
 )
 
 type createClientReq struct {

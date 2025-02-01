@@ -1,6 +1,6 @@
 package medical_report_repository
 
-import "project2/internal/domain"
+import "medicalCenter/internal/domain"
 
 // GetReportByIDClient ищет и возвращает заключение по id клиента
 func (r *MedRepo) GetReportByIDClient(clientID int) (*domain.MedicalReport, error) {

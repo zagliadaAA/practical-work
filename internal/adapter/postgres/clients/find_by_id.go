@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"project2/internal/domain"
+	"medicalCenter/internal/domain"
 )
 
 func (r *Repo) FindByID(id int) (*domain.Client, error) {

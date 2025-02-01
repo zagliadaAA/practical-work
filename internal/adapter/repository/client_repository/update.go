@@ -1,7 +1,7 @@
 package client_repository
 
 import (
-	"project2/internal/domain"
+	"medicalCenter/internal/domain"
 )
 
 func (r *Repo) Update(client *domain.Client) (*domain.Client, error) {

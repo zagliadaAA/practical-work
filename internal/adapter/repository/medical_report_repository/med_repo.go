@@ -3,7 +3,7 @@ package medical_report_repository
 import (
 	"errors"
 
-	"project2/internal/domain"
+	"medicalCenter/internal/domain"
 )
 
 var ErrReportNotFound = errors.New("report not found")

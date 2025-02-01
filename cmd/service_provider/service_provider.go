@@ -1,13 +1,13 @@
 package service_provider
 
 import (
-	"project2/internal/adapter/postgres/clients"
-	"project2/internal/adapter/postgres/reports"
-	"project2/internal/config"
-	"project2/internal/controller/client_controller"
-	"project2/internal/pkg/timer"
-	"project2/internal/usecase/client_usecase"
-	"project2/internal/usecase/medical_report_usecase"
+	"medicalCenter/internal/adapter/postgres/clients"
+	"medicalCenter/internal/adapter/postgres/reports"
+	"medicalCenter/internal/config"
+	"medicalCenter/internal/controller/client_controller"
+	"medicalCenter/internal/pkg/timer"
+	"medicalCenter/internal/usecase/client_usecase"
+	"medicalCenter/internal/usecase/medical_report_usecase"
 )
 
 type ServiceProvider struct {

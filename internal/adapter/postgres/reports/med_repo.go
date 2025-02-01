@@ -1,7 +1,7 @@
 package reports
 
 import (
-	"project2/internal/config"
+	"medicalCenter/internal/config"
 )
 
 type MedRepo struct {

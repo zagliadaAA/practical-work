@@ -1,7 +1,7 @@
 package service_provider
 
 import (
-	"project2/internal/pkg/timer"
+	"medicalCenter/internal/pkg/timer"
 )
 
 func (sp *ServiceProvider) getTimer() *timer.Timer {

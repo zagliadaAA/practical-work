@@ -1,6 +1,6 @@
 package client_repository
 
-import "project2/internal/domain"
+import "medicalCenter/internal/domain"
 
 func (r *Repo) Create(client *domain.Client) (*domain.Client, error) {
 	id := r.getNextIdentifier()

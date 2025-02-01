@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"project2/cmd/service_provider"
+	"medicalCenter/cmd/service_provider"
 )
 
 func main() {

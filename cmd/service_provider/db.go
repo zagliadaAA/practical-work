@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"project2/internal/config"
+	"medicalCenter/internal/config"
 )
 
 func (sp *ServiceProvider) GetDbCluster(ctx context.Context) *config.Cluster {

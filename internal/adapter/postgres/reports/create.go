@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"project2/internal/domain"
+	"medicalCenter/internal/domain"
 )
 
 func (r *MedRepo) Create(mr *domain.MedicalReport) (*domain.MedicalReport, error) {

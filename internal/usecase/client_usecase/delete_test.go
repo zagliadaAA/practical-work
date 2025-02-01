@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"project2/internal/usecase/client_usecase/mocks"
+	"medicalCenter/internal/usecase/client_usecase/mocks"
 
 	"github.com/stretchr/testify/assert"
 )

@@ -3,7 +3,7 @@ package medical_report_usecase
 import (
 	"time"
 
-	"project2/internal/domain"
+	"medicalCenter/internal/domain"
 )
 
 type UseCase struct {

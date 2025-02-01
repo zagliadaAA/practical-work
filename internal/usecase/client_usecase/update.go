@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"project2/internal/domain"
+	"medicalCenter/internal/domain"
 )
 
 type UpdateClientReq struct { //Вспомогательный тип для создания без ID

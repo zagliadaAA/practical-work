@@ -3,7 +3,7 @@ package client_repository
 import (
 	"errors"
 
-	"project2/internal/domain"
+	"medicalCenter/internal/domain"
 )
 
 var ErrClientNotFound = errors.New("client not found")

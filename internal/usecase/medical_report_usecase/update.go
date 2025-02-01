@@ -3,7 +3,7 @@ package medical_report_usecase
 import (
 	"fmt"
 
-	"project2/internal/domain"
+	"medicalCenter/internal/domain"
 )
 
 type UpdateReportReq struct { //Вспомогательный тип для создания без ID

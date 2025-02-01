@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"project2/internal/domain"
-	"project2/internal/usecase/medical_report_usecase/mocks"
+	"medicalCenter/internal/domain"
+	"medicalCenter/internal/usecase/medical_report_usecase/mocks"
 
 	"github.com/stretchr/testify/assert"
 )

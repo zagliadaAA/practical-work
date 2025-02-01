@@ -1,7 +1,7 @@
 package service_provider
 
 import (
-	"project2/internal/controller/client_controller"
+	"medicalCenter/internal/controller/client_controller"
 )
 
 func (sp *ServiceProvider) getClientController() *client_controller.Controller {

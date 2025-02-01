@@ -1,7 +1,7 @@
 package medical_report_repository
 
 import (
-	"project2/internal/domain"
+	"medicalCenter/internal/domain"
 )
 
 func (r *MedRepo) Update(medicalReport *domain.MedicalReport) (*domain.MedicalReport, error) {

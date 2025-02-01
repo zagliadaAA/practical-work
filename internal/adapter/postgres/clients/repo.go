@@ -1,7 +1,7 @@
 package clients
 
 import (
-	"project2/internal/config"
+	"medicalCenter/internal/config"
 )
 
 type Repo struct {

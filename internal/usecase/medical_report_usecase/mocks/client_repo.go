@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	domain "project2/internal/domain"
+	domain "medicalCenter/internal/domain"
 
 	mock "github.com/stretchr/testify/mock"
 )

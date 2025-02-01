@@ -1,8 +1,8 @@
 package client_controller
 
 import (
-	"project2/internal/domain"
-	"project2/internal/usecase/client_usecase"
+	"medicalCenter/internal/domain"
+	"medicalCenter/internal/usecase/client_usecase"
 )
 
 type (
