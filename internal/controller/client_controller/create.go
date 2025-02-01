@@ -2,17 +2,17 @@ package client_controller
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 	"time"
 
+	"project2/internal/controller"
 	"project2/internal/usecase/client_usecase"
 )
 
 type createClientReq struct {
-	Name        string    `json:"name"`
-	BirthDate   time.Time `json:"birth_date"`
-	PhoneNumber string    `json:"phone_number"`
+	Name        string `json:"name"`
+	BirthDate   string `json:"birth_date"`
+	PhoneNumber string `json:"phone_number"`
 }
 
 type createClientResp struct {
@@ -39,15 +39,20 @@ func (c *Controller) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = validateCreateClientReq(req); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if validationError := validateCreateClientReq(req); validationError != nil {
+		controller.RespondValidationError(w, validationError)
 
 		return
 	}
 
+	birthDate, err := time.Parse(time.RFC3339, req.BirthDate)
+	if err != nil {
+		controller.RespondValidationError(w, controller.NewValidationError("birth_date", "time format not allowed"))
+	}
+
 	client, err := c.clientUseCase.Create(client_usecase.CreateClientReq{
 		Name:        req.Name,
-		BDate:       req.BirthDate,
+		BDate:       birthDate,
 		PhoneNumber: req.PhoneNumber,
 	})
 	if err != nil {
@@ -70,17 +75,17 @@ func (c *Controller) Create(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func validateCreateClientReq(r createClientReq) error {
+func validateCreateClientReq(r createClientReq) *controller.ValidationError {
 	if r.Name == "" {
-		return errors.New("name is required")
+		return controller.NewValidationError("name", "name is required")
 	}
 
 	if r.PhoneNumber == "" || len(r.PhoneNumber) > 11 {
-		return errors.New("phone_number is required")
+		return controller.NewValidationError("phone_number", "phone number must contain at least 11 characters")
 	}
 
-	if r.BirthDate.IsZero() {
-		return errors.New("birth_date is required")
+	if r.BirthDate == "" {
+		return controller.NewValidationError("birth_date", "birth_date is required")
 	}
 
 	return nil
