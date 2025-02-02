@@ -3,19 +3,20 @@ package client_controller
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"time"
 
 	"medicalCenter/internal/controller"
 	"medicalCenter/internal/usecase/client_usecase"
 )
 
-type createClientReq struct {
+type updateClientReq struct {
 	Name        string `json:"name"`
 	BirthDate   string `json:"birth_date"`
 	PhoneNumber string `json:"phone_number"`
 }
 
-type createClientResp struct {
+type updateClientResp struct {
 	ID          int       `json:"id"`
 	Name        string    `json:"name"`
 	BDate       time.Time `json:"birth_date"`
@@ -23,19 +24,21 @@ type createClientResp struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
-func (c *Controller) Create(w http.ResponseWriter, r *http.Request) {
-	// парсим json в нашу структуру
-	// валидируем тело запроса или парамерты
-	// вызываем юзкейс
-	// обрабатываем ошибки если есть
-	// возвращаем результат
+func (c *Controller) Update(w http.ResponseWriter, r *http.Request) {
+	idString := r.URL.Path[len("/clients/"):]
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		http.Error(w, "invalid ID client", http.StatusBadRequest)
 
-	var req createClientReq
+		return
+	}
+
+	var req updateClientReq
 	if err := c.DecodeRequest(w, r, &req); err != nil {
 		return
 	}
 
-	validationError := validateCreateClientReq(&req)
+	validationError := validateUpdateClientReq(req)
 	if validationError != nil {
 		controller.RespondValidationError(w, validationError)
 
@@ -50,7 +53,8 @@ func (c *Controller) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	client, err := c.clientUseCase.Create(client_usecase.CreateClientReq{
+	client, err := c.clientUseCase.Update(client_usecase.UpdateClientReq{
+		ID:          id,
 		Name:        req.Name,
 		BDate:       birthDate,
 		PhoneNumber: req.PhoneNumber,
@@ -63,7 +67,7 @@ func (c *Controller) Create(w http.ResponseWriter, r *http.Request) {
 
 	encoder := json.NewEncoder(w)
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	err = encoder.Encode(createClientResp{
+	err = encoder.Encode(updateClientResp{
 		ID:          client.ID,
 		Name:        client.Name,
 		BDate:       client.BDate,
@@ -75,7 +79,7 @@ func (c *Controller) Create(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func validateCreateClientReq(r *createClientReq) *controller.ValidationError {
+func validateUpdateClientReq(r updateClientReq) *controller.ValidationError {
 	if r.Name == "" || len(r.Name) > 120 {
 		return controller.NewValidationError("name", "name not null, lenght no more then 120")
 	}
