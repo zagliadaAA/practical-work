@@ -23,3 +23,29 @@ func RespondValidationError(w http.ResponseWriter, v *ValidationError) {
 func RespondInternalServerError(w http.ResponseWriter, err error) {
 	http.Error(w, err.Error(), http.StatusInternalServerError)
 }
+
+// DecodeRequest считывает тело запроса и помещает его в структуру
+func DecodeRequest(w http.ResponseWriter, r *http.Request, req interface{}) error {
+	err := json.NewDecoder(r.Body).Decode(req)
+	if err != nil {
+		RespondValidationError(w, NewValidationError("decode", "error reading json"))
+
+		return err
+	}
+
+	return nil
+}
+
+// EncodeResponse записывает данные из структуры в json и возвращает в качестве ответа
+func EncodeResponse(w http.ResponseWriter, response interface{}) error {
+	encoder := json.NewEncoder(w)
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err := encoder.Encode(response)
+	if err != nil {
+		RespondValidationError(w, NewValidationError("encode", "error writing json encoding"))
+
+		return err
+	}
+
+	return nil
+}

@@ -1,7 +1,6 @@
 package medical_report_controller
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 
@@ -26,7 +25,7 @@ type updateMedicalReportResp struct {
 
 func (c *Controller) Update(w http.ResponseWriter, r *http.Request) {
 	var req updateMedicalReportReq
-	if err := c.DecodeRequest(w, r, &req); err != nil {
+	if err := controller.DecodeRequest(w, r, &req); err != nil {
 		return
 	}
 
@@ -43,23 +42,20 @@ func (c *Controller) Update(w http.ResponseWriter, r *http.Request) {
 		Diagnosis:  req.Diagnosis,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		controller.RespondValidationError(w, controller.NewValidationError("update", "failed to update medical report"))
 
 		return
 	}
 
-	encoder := json.NewEncoder(w)
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	err = encoder.Encode(updateMedicalReportResp{
+	if err = controller.EncodeResponse(w, createMedicalReportResp{
 		ID:         medicalReport.ID,
 		DoctorName: medicalReport.DoctorName,
 		Diagnosis:  medicalReport.Diagnosis,
 		CreatedAt:  medicalReport.CreatedAt,
 		UpdatedAt:  medicalReport.UpdatedAt,
 		IdClient:   medicalReport.IDClient,
-	})
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	}); err != nil {
+		return
 	}
 }
 

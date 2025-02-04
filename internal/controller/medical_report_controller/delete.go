@@ -3,27 +3,25 @@ package medical_report_controller
 import (
 	"net/http"
 	"strconv"
+
+	"medicalCenter/internal/controller"
 )
 
 func (c *Controller) Delete(w http.ResponseWriter, r *http.Request) {
 	idString := r.URL.Path[len("/reports/"):]
 	id, err := strconv.Atoi(idString)
 	if err != nil {
-		http.Error(w, "invalid ID", http.StatusBadRequest)
+		controller.RespondValidationError(w, controller.NewValidationError("atoi", "failed converted to type int"))
 
 		return
 	}
 
 	err = c.medicalReportUseCase.Delete(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		controller.RespondValidationError(w, controller.NewValidationError("delete", "failed to delete medical report"))
 
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	_, err = w.Write([]byte("Report deleted successfully"))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
 }

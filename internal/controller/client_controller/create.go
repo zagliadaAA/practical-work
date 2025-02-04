@@ -1,7 +1,6 @@
 package client_controller
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 
@@ -31,7 +30,7 @@ func (c *Controller) Create(w http.ResponseWriter, r *http.Request) {
 	// возвращаем результат
 
 	var req createClientReq
-	if err := c.DecodeRequest(w, r, &req); err != nil {
+	if err := controller.DecodeRequest(w, r, &req); err != nil {
 		return
 	}
 
@@ -56,22 +55,19 @@ func (c *Controller) Create(w http.ResponseWriter, r *http.Request) {
 		PhoneNumber: req.PhoneNumber,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		controller.RespondValidationError(w, controller.NewValidationError("create client", "failed to create client"))
 
 		return
 	}
 
-	encoder := json.NewEncoder(w)
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	err = encoder.Encode(createClientResp{
+	if err = controller.EncodeResponse(w, createClientResp{
 		ID:          client.ID,
 		Name:        client.Name,
 		BDate:       client.BDate,
 		PhoneNumber: client.PhoneNumber,
 		UpdatedAt:   client.UpdatedAt,
-	})
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	}); err != nil {
+		return
 	}
 }
 

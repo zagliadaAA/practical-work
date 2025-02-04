@@ -3,27 +3,25 @@ package client_controller
 import (
 	"net/http"
 	"strconv"
+
+	"medicalCenter/internal/controller"
 )
 
 func (c *Controller) Delete(w http.ResponseWriter, r *http.Request) {
 	idString := r.URL.Path[len("/clients/"):]
 	id, err := strconv.Atoi(idString)
 	if err != nil {
-		http.Error(w, "invalid ID", http.StatusBadRequest)
+		controller.RespondValidationError(w, controller.NewValidationError("atoi", "failed converted to type int"))
 
 		return
 	}
 
 	err = c.clientUseCase.Delete(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		controller.RespondValidationError(w, controller.NewValidationError("delete", "failed to delete client"))
 
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	_, err = w.Write([]byte("Client deleted successfully"))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
 }

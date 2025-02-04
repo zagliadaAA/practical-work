@@ -1,7 +1,6 @@
 package client_controller
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 	"time"
@@ -28,13 +27,13 @@ func (c *Controller) Update(w http.ResponseWriter, r *http.Request) {
 	idString := r.URL.Path[len("/clients/"):]
 	id, err := strconv.Atoi(idString)
 	if err != nil {
-		http.Error(w, "invalid ID client", http.StatusBadRequest)
+		controller.RespondValidationError(w, controller.NewValidationError("atoi", "failed converted to type int"))
 
 		return
 	}
 
 	var req updateClientReq
-	if err := c.DecodeRequest(w, r, &req); err != nil {
+	if err := controller.DecodeRequest(w, r, &req); err != nil {
 		return
 	}
 
@@ -60,22 +59,19 @@ func (c *Controller) Update(w http.ResponseWriter, r *http.Request) {
 		PhoneNumber: req.PhoneNumber,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		controller.RespondValidationError(w, controller.NewValidationError("update", "failed to update client"))
 
 		return
 	}
 
-	encoder := json.NewEncoder(w)
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	err = encoder.Encode(updateClientResp{
+	if err = controller.EncodeResponse(w, createClientResp{
 		ID:          client.ID,
 		Name:        client.Name,
 		BDate:       client.BDate,
 		PhoneNumber: client.PhoneNumber,
 		UpdatedAt:   client.UpdatedAt,
-	})
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	}); err != nil {
+		return
 	}
 }
 
