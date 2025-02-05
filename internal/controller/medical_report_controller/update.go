@@ -1,9 +1,12 @@
 package medical_report_controller
 
 import (
+	"errors"
 	"net/http"
+	"strconv"
 	"time"
 
+	"medicalCenter/internal/adapter/postgres"
 	"medicalCenter/internal/controller"
 	"medicalCenter/internal/usecase/medical_report_usecase"
 )
@@ -24,6 +27,14 @@ type updateMedicalReportResp struct {
 }
 
 func (c *Controller) Update(w http.ResponseWriter, r *http.Request) {
+	idString := r.URL.Path[len("/reports/"):]
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		controller.RespondStatusBadRequestError(w, controller.NewStatusBadRequestError("failed converted to type int"))
+
+		return
+	}
+
 	var req updateMedicalReportReq
 	if err := controller.DecodeRequest(w, r, &req); err != nil {
 		return
@@ -37,24 +48,23 @@ func (c *Controller) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	medicalReport, err := c.medicalReportUseCase.Update(medical_report_usecase.UpdateReportReq{
+		ID:         id,
 		IDClient:   req.IDClient,
 		DoctorName: req.DoctorName,
 		Diagnosis:  req.Diagnosis,
 	})
 	if err != nil {
-		controller.RespondValidationError(w, controller.NewValidationError("update", "failed to update medical report"))
+		if errors.Is(err, postgres.ErrNotFound) {
+			controller.RespondNotFoundError(w)
+
+			return
+		}
+		controller.RespondStatusBadRequestError(w, controller.NewStatusBadRequestError("failed to update medical report"))
 
 		return
 	}
 
-	if err = controller.EncodeResponse(w, createMedicalReportResp{
-		ID:         medicalReport.ID,
-		DoctorName: medicalReport.DoctorName,
-		Diagnosis:  medicalReport.Diagnosis,
-		CreatedAt:  medicalReport.CreatedAt,
-		UpdatedAt:  medicalReport.UpdatedAt,
-		IdClient:   medicalReport.IDClient,
-	}); err != nil {
+	if err = controller.EncodeResponse(w, mapMedicalReportToResponseForUpdate(medicalReport)); err != nil {
 		return
 	}
 }

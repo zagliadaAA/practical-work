@@ -12,3 +12,13 @@ func NewValidationError(param string, message string) *ValidationError {
 	}
 
 }
+
+type StatusBadRequestError struct {
+	Message string `json:"message"`
+}
+
+func NewStatusBadRequestError(message string) *StatusBadRequestError {
+	return &StatusBadRequestError{
+		Message: message,
+	}
+}

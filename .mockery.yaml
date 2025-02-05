@@ -45,7 +45,7 @@ dir: "{{.InterfaceDir}}/mocks"
 packages:
 #Содержит список пакетов, для которых нужно генерировать моки.
 
-  project2/internal/usecase:
+  medicalCenter/internal/usecase:
     #Настраивает генерацию моков для данного пакета.
 
     config:

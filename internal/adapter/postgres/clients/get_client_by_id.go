@@ -7,7 +7,7 @@ import (
 	"medicalCenter/internal/domain"
 )
 
-func (r *Repo) FindByID(id int) (*domain.Client, error) {
+func (r *Repo) GetClientByID(id int) (*domain.Client, error) {
 	query := "SELECT id, name, b_date, phone_number, updated_at FROM clients WHERE id = $1;"
 
 	var client domain.Client

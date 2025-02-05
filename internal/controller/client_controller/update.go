@@ -27,7 +27,7 @@ func (c *Controller) Update(w http.ResponseWriter, r *http.Request) {
 	idString := r.URL.Path[len("/clients/"):]
 	id, err := strconv.Atoi(idString)
 	if err != nil {
-		controller.RespondValidationError(w, controller.NewValidationError("atoi", "failed converted to type int"))
+		controller.RespondStatusBadRequestError(w, controller.NewStatusBadRequestError("failed converted to type int"))
 
 		return
 	}
@@ -47,7 +47,7 @@ func (c *Controller) Update(w http.ResponseWriter, r *http.Request) {
 	//преобразование даты из строки в time.time
 	birthDate, err := time.Parse(time.DateOnly, req.BirthDate)
 	if err != nil {
-		controller.RespondValidationError(w, controller.NewValidationError("birth_date", "time format (2000-11-11) not allowed"))
+		controller.RespondStatusBadRequestError(w, controller.NewStatusBadRequestError("time format (2000-11-11) not allowed"))
 
 		return
 	}
@@ -59,18 +59,12 @@ func (c *Controller) Update(w http.ResponseWriter, r *http.Request) {
 		PhoneNumber: req.PhoneNumber,
 	})
 	if err != nil {
-		controller.RespondValidationError(w, controller.NewValidationError("update", "failed to update client"))
+		controller.RespondStatusBadRequestError(w, controller.NewStatusBadRequestError("failed to update client"))
 
 		return
 	}
 
-	if err = controller.EncodeResponse(w, createClientResp{
-		ID:          client.ID,
-		Name:        client.Name,
-		BDate:       client.BDate,
-		PhoneNumber: client.PhoneNumber,
-		UpdatedAt:   client.UpdatedAt,
-	}); err != nil {
+	if err = controller.EncodeResponse(w, mapClientToResponseForUpdate(client)); err != nil {
 		return
 	}
 }

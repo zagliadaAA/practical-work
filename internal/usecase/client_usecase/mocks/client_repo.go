@@ -125,12 +125,12 @@ func (_c *ClientRepo_Delete_Call) RunAndReturn(run func(int) error) *ClientRepo_
 	return _c
 }
 
-// FindByID provides a mock function with given fields: id
-func (_m *ClientRepo) FindByID(id int) (*domain.Client, error) {
+// GetClientByID provides a mock function with given fields: id
+func (_m *ClientRepo) GetClientByID(id int) (*domain.Client, error) {
 	ret := _m.Called(id)
 
 	if len(ret) == 0 {
-		panic("no return value specified for FindByID")
+		panic("no return value specified for GetClientByID")
 	}
 
 	var r0 *domain.Client
@@ -155,30 +155,30 @@ func (_m *ClientRepo) FindByID(id int) (*domain.Client, error) {
 	return r0, r1
 }
 
-// ClientRepo_FindByID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FindByID'
-type ClientRepo_FindByID_Call struct {
+// ClientRepo_GetClientByID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetClientByID'
+type ClientRepo_GetClientByID_Call struct {
 	*mock.Call
 }
 
-// FindByID is a helper method to define mock.On call
+// GetClientByID is a helper method to define mock.On call
 //   - id int
-func (_e *ClientRepo_Expecter) FindByID(id interface{}) *ClientRepo_FindByID_Call {
-	return &ClientRepo_FindByID_Call{Call: _e.mock.On("FindByID", id)}
+func (_e *ClientRepo_Expecter) GetClientByID(id interface{}) *ClientRepo_GetClientByID_Call {
+	return &ClientRepo_GetClientByID_Call{Call: _e.mock.On("GetClientByID", id)}
 }
 
-func (_c *ClientRepo_FindByID_Call) Run(run func(id int)) *ClientRepo_FindByID_Call {
+func (_c *ClientRepo_GetClientByID_Call) Run(run func(id int)) *ClientRepo_GetClientByID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(int))
 	})
 	return _c
 }
 
-func (_c *ClientRepo_FindByID_Call) Return(_a0 *domain.Client, _a1 error) *ClientRepo_FindByID_Call {
+func (_c *ClientRepo_GetClientByID_Call) Return(_a0 *domain.Client, _a1 error) *ClientRepo_GetClientByID_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *ClientRepo_FindByID_Call) RunAndReturn(run func(int) (*domain.Client, error)) *ClientRepo_FindByID_Call {
+func (_c *ClientRepo_GetClientByID_Call) RunAndReturn(run func(int) (*domain.Client, error)) *ClientRepo_GetClientByID_Call {
 	_c.Call.Return(run)
 	return _c
 }

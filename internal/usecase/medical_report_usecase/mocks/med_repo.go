@@ -125,12 +125,12 @@ func (_c *MedRepo_Delete_Call) RunAndReturn(run func(int) error) *MedRepo_Delete
 	return _c
 }
 
-// GetReportByIDClient provides a mock function with given fields: clientID
-func (_m *MedRepo) GetReportByIDClient(clientID int) (*domain.MedicalReport, error) {
+// GetReportByID provides a mock function with given fields: clientID
+func (_m *MedRepo) GetReportByID(clientID int) (*domain.MedicalReport, error) {
 	ret := _m.Called(clientID)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetReportByIDClient")
+		panic("no return value specified for GetReportByID")
 	}
 
 	var r0 *domain.MedicalReport
@@ -155,30 +155,30 @@ func (_m *MedRepo) GetReportByIDClient(clientID int) (*domain.MedicalReport, err
 	return r0, r1
 }
 
-// MedRepo_GetReportByIDClient_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetReportByIDClient'
-type MedRepo_GetReportByIDClient_Call struct {
+// MedRepo_GetReportByID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetReportByID'
+type MedRepo_GetReportByID_Call struct {
 	*mock.Call
 }
 
-// GetReportByIDClient is a helper method to define mock.On call
+// GetReportByID is a helper method to define mock.On call
 //   - clientID int
-func (_e *MedRepo_Expecter) GetReportByIDClient(clientID interface{}) *MedRepo_GetReportByIDClient_Call {
-	return &MedRepo_GetReportByIDClient_Call{Call: _e.mock.On("GetReportByIDClient", clientID)}
+func (_e *MedRepo_Expecter) GetReportByID(clientID interface{}) *MedRepo_GetReportByID_Call {
+	return &MedRepo_GetReportByID_Call{Call: _e.mock.On("GetReportByID", clientID)}
 }
 
-func (_c *MedRepo_GetReportByIDClient_Call) Run(run func(clientID int)) *MedRepo_GetReportByIDClient_Call {
+func (_c *MedRepo_GetReportByID_Call) Run(run func(clientID int)) *MedRepo_GetReportByID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(int))
 	})
 	return _c
 }
 
-func (_c *MedRepo_GetReportByIDClient_Call) Return(_a0 *domain.MedicalReport, _a1 error) *MedRepo_GetReportByIDClient_Call {
+func (_c *MedRepo_GetReportByID_Call) Return(_a0 *domain.MedicalReport, _a1 error) *MedRepo_GetReportByID_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *MedRepo_GetReportByIDClient_Call) RunAndReturn(run func(int) (*domain.MedicalReport, error)) *MedRepo_GetReportByIDClient_Call {
+func (_c *MedRepo_GetReportByID_Call) RunAndReturn(run func(int) (*domain.MedicalReport, error)) *MedRepo_GetReportByID_Call {
 	_c.Call.Return(run)
 	return _c
 }

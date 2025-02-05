@@ -16,7 +16,7 @@ type (
 		Create(client *domain.Client) (*domain.Client, error)
 		Delete(id int) error
 		Update(client *domain.Client) (*domain.Client, error)
-		FindByID(id int) (*domain.Client, error)
+		GetClientByID(id int) (*domain.Client, error)
 	}
 	timer interface {
 		Now() time.Time

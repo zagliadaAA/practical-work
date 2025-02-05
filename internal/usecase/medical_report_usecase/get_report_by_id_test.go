@@ -11,10 +11,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDeleteUseCase(t *testing.T) {
+func TestGetReportByID(t *testing.T) {
 	t.Parallel()
 
-	now := time.Now().UTC()
+	now := time.Now()
 	errTest := errors.New("error test")
 
 	//зависимости, которые нужны для теста
@@ -26,39 +26,46 @@ func TestDeleteUseCase(t *testing.T) {
 
 	//данные для теста
 	type args struct {
-		reportID int
+		ID    int
+		timer *mocks.Timer
 	}
 
 	//тесты
 	tests := []struct {
 		name    string
 		args    args
+		want    *domain.MedicalReport
 		wantErr error
 		before  func(f fields, args args)
 	}{
 		{
 			name: "success",
 			args: args{
-				reportID: 2,
+				ID: 2,
+			},
+			want: &domain.MedicalReport{
+				ID:         2,
+				IDClient:   4,
+				DoctorName: "Ложкин В",
+				Diagnosis:  "A77.7",
+				CreatedAt:  now,
+				UpdatedAt:  now,
 			},
 			before: func(f fields, args args) {
-				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now, now)
-				report.ID = args.reportID
+				report := domain.NewMedicalReport("Ложкин В", "A77.7", 4, now, now)
+				report.ID = 2
 
-				f.medRepo.EXPECT().Delete(report.ID).Return(nil)
+				f.medRepo.EXPECT().GetReportByID(args.ID).Return(report, nil)
 			},
 		},
 		{
-			name: "error deleting report",
+			name: "error get report",
 			args: args{
-				reportID: 2,
+				ID: 2,
 			},
 			wantErr: errTest,
 			before: func(f fields, args args) {
-				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now, now)
-				report.ID = args.reportID
-
-				f.medRepo.EXPECT().Delete(report.ID).Return(errTest)
+				f.medRepo.EXPECT().GetReportByID(args.ID).Return(nil, errTest)
 			},
 		},
 	}
@@ -70,16 +77,15 @@ func TestDeleteUseCase(t *testing.T) {
 
 			//создали зависимости
 			f := fields{
-				medRepo:    mocks.NewMedRepo(t),
-				clientRepo: mocks.NewClientRepo(t),
-				timer:      mocks.NewTimer(t),
+				medRepo: mocks.NewMedRepo(t),
+				timer:   mocks.NewTimer(t),
 			}
 			tt.before(f, tt.args)
 
 			uc := NewUseCase(f.medRepo, f.clientRepo, f.timer)
 
 			//выполнили
-			err := uc.Delete(tt.args.reportID)
+			e, err := uc.GetReportByID(tt.args.ID)
 
 			//проверяем результат
 			if tt.wantErr != nil {
@@ -88,6 +94,7 @@ func TestDeleteUseCase(t *testing.T) {
 			}
 
 			a.NoError(err)
+			a.Equal(tt.want, e)
 		})
 	}
 }

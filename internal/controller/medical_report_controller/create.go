@@ -42,19 +42,12 @@ func (c *Controller) Create(w http.ResponseWriter, r *http.Request) {
 		Diagnosis:  req.Diagnosis,
 	})
 	if err != nil {
-		controller.RespondValidationError(w, controller.NewValidationError("create medical report", "failed to create medical report"))
+		controller.RespondStatusBadRequestError(w, controller.NewStatusBadRequestError("failed to create medical report"))
 
 		return
 	}
 
-	if err = controller.EncodeResponse(w, createMedicalReportResp{
-		ID:         medicalReport.ID,
-		DoctorName: medicalReport.DoctorName,
-		Diagnosis:  medicalReport.Diagnosis,
-		CreatedAt:  medicalReport.CreatedAt,
-		UpdatedAt:  medicalReport.UpdatedAt,
-		IdClient:   medicalReport.IDClient,
-	}); err != nil {
+	if err = controller.EncodeResponse(w, mapMedicalReportToResponseForCreate(medicalReport)); err != nil {
 		return
 	}
 }

@@ -19,9 +19,17 @@ func RespondValidationError(w http.ResponseWriter, v *ValidationError) {
 	RespondJSON(w, http.StatusBadRequest, v)
 }
 
+func RespondStatusBadRequestError(w http.ResponseWriter, s *StatusBadRequestError) {
+	RespondJSON(w, http.StatusBadRequest, s)
+}
+
 // RespondInternalServerError отправляет JSON-ответ с сообщением об ошибке сервера.
 func RespondInternalServerError(w http.ResponseWriter, err error) {
 	http.Error(w, err.Error(), http.StatusInternalServerError)
+}
+
+func RespondNotFoundError(w http.ResponseWriter) {
+	RespondJSON(w, http.StatusNotFound, nil)
 }
 
 // DecodeRequest считывает тело запроса и помещает его в структуру

@@ -13,6 +13,7 @@ type medicalReportUseCase interface {
 	Create(req medical_report_usecase.CreateMedicalReportReq) (*domain.MedicalReport, error)
 	Delete(id int) error
 	Update(req medical_report_usecase.UpdateReportReq) (*domain.MedicalReport, error)
+	GetReportByID(clientID int) (*domain.MedicalReport, error)
 }
 
 func NewController(useCase medicalReportUseCase) *Controller {

@@ -1,4 +1,4 @@
-package medical_report_usecase
+package client_usecase
 
 import (
 	"errors"
@@ -6,59 +6,64 @@ import (
 	"time"
 
 	"medicalCenter/internal/domain"
-	"medicalCenter/internal/usecase/medical_report_usecase/mocks"
+	"medicalCenter/internal/usecase/client_usecase/mocks"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDeleteUseCase(t *testing.T) {
+func TestGetClientByID(t *testing.T) {
 	t.Parallel()
 
-	now := time.Now().UTC()
+	now := time.Now()
 	errTest := errors.New("error test")
 
 	//зависимости, которые нужны для теста
 	type fields struct {
-		medRepo    *mocks.MedRepo
 		clientRepo *mocks.ClientRepo
 		timer      *mocks.Timer
 	}
 
 	//данные для теста
 	type args struct {
-		reportID int
+		ID    int
+		timer *mocks.Timer
 	}
 
 	//тесты
 	tests := []struct {
 		name    string
 		args    args
+		want    *domain.Client
 		wantErr error
 		before  func(f fields, args args)
 	}{
 		{
 			name: "success",
 			args: args{
-				reportID: 2,
+				ID: 2,
+			},
+			want: &domain.Client{
+				Name:        "Artem",
+				BDate:       now,
+				PhoneNumber: "+7888888",
+				UpdatedAt:   now,
 			},
 			before: func(f fields, args args) {
-				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now, now)
-				report.ID = args.reportID
+				client := domain.NewClient("Artem", now, "+7888888", now)
+				client.BDate = now
+				client.UpdatedAt = now
 
-				f.medRepo.EXPECT().Delete(report.ID).Return(nil)
+				f.clientRepo.EXPECT().GetClientByID(args.ID).Return(client, nil)
 			},
 		},
 		{
-			name: "error deleting report",
+			name: "error get client",
 			args: args{
-				reportID: 2,
+				ID: 2,
 			},
 			wantErr: errTest,
 			before: func(f fields, args args) {
-				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now, now)
-				report.ID = args.reportID
-
-				f.medRepo.EXPECT().Delete(report.ID).Return(errTest)
+				f.clientRepo.EXPECT().GetClientByID(args.ID).Return(nil, errTest)
 			},
 		},
 	}
@@ -70,16 +75,15 @@ func TestDeleteUseCase(t *testing.T) {
 
 			//создали зависимости
 			f := fields{
-				medRepo:    mocks.NewMedRepo(t),
 				clientRepo: mocks.NewClientRepo(t),
 				timer:      mocks.NewTimer(t),
 			}
 			tt.before(f, tt.args)
 
-			uc := NewUseCase(f.medRepo, f.clientRepo, f.timer)
+			uc := NewUseCase(f.clientRepo, f.timer)
 
 			//выполнили
-			err := uc.Delete(tt.args.reportID)
+			e, err := uc.GetClientByID(tt.args.ID)
 
 			//проверяем результат
 			if tt.wantErr != nil {
@@ -88,6 +92,7 @@ func TestDeleteUseCase(t *testing.T) {
 			}
 
 			a.NoError(err)
+			a.Equal(tt.want, e)
 		})
 	}
 }

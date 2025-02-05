@@ -44,7 +44,7 @@ func (c *Controller) Create(w http.ResponseWriter, r *http.Request) {
 	//преобразование даты из строки в time.time
 	birthDate, err := time.Parse(time.DateOnly, req.BirthDate)
 	if err != nil {
-		controller.RespondValidationError(w, controller.NewValidationError("birth_date", "time format (2000-11-11) not allowed"))
+		controller.RespondStatusBadRequestError(w, controller.NewStatusBadRequestError("time format (2000-11-11) not allowed"))
 
 		return
 	}
@@ -55,18 +55,12 @@ func (c *Controller) Create(w http.ResponseWriter, r *http.Request) {
 		PhoneNumber: req.PhoneNumber,
 	})
 	if err != nil {
-		controller.RespondValidationError(w, controller.NewValidationError("create client", "failed to create client"))
+		controller.RespondStatusBadRequestError(w, controller.NewStatusBadRequestError("failed to create client"))
 
 		return
 	}
 
-	if err = controller.EncodeResponse(w, createClientResp{
-		ID:          client.ID,
-		Name:        client.Name,
-		BDate:       client.BDate,
-		PhoneNumber: client.PhoneNumber,
-		UpdatedAt:   client.UpdatedAt,
-	}); err != nil {
+	if err = controller.EncodeResponse(w, mapClientToResponseForCreate(client)); err != nil {
 		return
 	}
 }
