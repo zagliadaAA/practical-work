@@ -24,10 +24,10 @@ type updateClientResp struct {
 }
 
 func (c *Controller) Update(w http.ResponseWriter, r *http.Request) {
-	idString := r.URL.Path[len("/clients/"):]
+	idString := r.PathValue("id")
 	id, err := strconv.Atoi(idString)
 	if err != nil {
-		controller.RespondStatusBadRequestError(w, controller.NewStatusBadRequestError("failed converted to type int"))
+		controller.RespondValidationError(w, controller.NewValidationError("id", "invalid id"))
 
 		return
 	}
