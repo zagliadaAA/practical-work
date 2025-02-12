@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"project2/internal/domain"
+	"medicalCenter/internal/domain"
 )
 
 type UpdateClientReq struct { //Вспомогательный тип для создания без ID
@@ -15,9 +15,9 @@ type UpdateClientReq struct { //Вспомогательный тип для с�
 }
 
 func (uc *UseCase) Update(req UpdateClientReq) (*domain.Client, error) {
-	client, err := uc.clientRepo.FindByID(req.ID)
+	client, err := uc.clientRepo.GetClientByID(req.ID)
 	if err != nil {
-		return nil, fmt.Errorf("clientRepo.FindByID: %w", err)
+		return nil, fmt.Errorf("clientRepo.GetClientByID: %w", err)
 	}
 
 	client.Name = req.Name

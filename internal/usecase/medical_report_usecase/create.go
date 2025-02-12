@@ -3,7 +3,7 @@ package medical_report_usecase
 import (
 	"fmt"
 
-	"project2/internal/domain"
+	"medicalCenter/internal/domain"
 )
 
 type CreateMedicalReportReq struct { //Вспомогательный тип для создания без ID
@@ -13,9 +13,9 @@ type CreateMedicalReportReq struct { //Вспомогательный тип д�
 }
 
 func (uc *UseCase) Create(req CreateMedicalReportReq) (*domain.MedicalReport, error) {
-	client, err := uc.clientRepo.FindByID(req.IDClient)
+	client, err := uc.clientRepo.GetClientByID(req.IDClient)
 	if err != nil {
-		return nil, fmt.Errorf("clientRepo.FindByID: %w", err)
+		return nil, fmt.Errorf("clientRepo.GetClientByID: %w", err)
 	}
 
 	report := domain.NewMedicalReport(req.DoctorName, req.Diagnosis, client.ID, uc.timer.Now(), uc.timer.Now())

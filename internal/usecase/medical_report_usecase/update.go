@@ -3,19 +3,20 @@ package medical_report_usecase
 import (
 	"fmt"
 
-	"project2/internal/domain"
+	"medicalCenter/internal/domain"
 )
 
 type UpdateReportReq struct { //Вспомогательный тип для создания без ID
+	ID         int
 	DoctorName string
 	Diagnosis  string
 	IDClient   int
 }
 
 func (uc *UseCase) Update(req UpdateReportReq) (*domain.MedicalReport, error) {
-	report, err := uc.medRepo.GetReportByIDClient(req.IDClient)
+	report, err := uc.medRepo.GetReportByID(req.ID)
 	if err != nil {
-		return nil, fmt.Errorf("medRepo.GetReportByIDClient: %w", err)
+		return nil, fmt.Errorf("medRepo.GetReportByID: %w", err)
 	}
 
 	report.DoctorName = req.DoctorName

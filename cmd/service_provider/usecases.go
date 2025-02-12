@@ -1,8 +1,8 @@
 package service_provider
 
 import (
-	"project2/internal/usecase/client_usecase"
-	"project2/internal/usecase/medical_report_usecase"
+	"medicalCenter/internal/usecase/client_usecase"
+	"medicalCenter/internal/usecase/medical_report_usecase"
 )
 
 func (sp *ServiceProvider) GetClientUseCase() *client_usecase.UseCase {

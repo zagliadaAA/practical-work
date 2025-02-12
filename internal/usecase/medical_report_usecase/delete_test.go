@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"project2/internal/domain"
-	"project2/internal/usecase/medical_report_usecase/mocks"
+	"medicalCenter/internal/domain"
+	"medicalCenter/internal/usecase/medical_report_usecase/mocks"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -26,7 +26,6 @@ func TestDeleteUseCase(t *testing.T) {
 
 	//данные для теста
 	type args struct {
-		clientID int
 		reportID int
 	}
 
@@ -40,32 +39,18 @@ func TestDeleteUseCase(t *testing.T) {
 		{
 			name: "success",
 			args: args{
-				clientID: 4,
 				reportID: 2,
 			},
 			before: func(f fields, args args) {
 				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now, now)
 				report.ID = args.reportID
 
-				f.medRepo.EXPECT().GetReportByIDClient(args.clientID).Return(report, nil)
 				f.medRepo.EXPECT().Delete(report.ID).Return(nil)
-			},
-		},
-		{
-			name: "error on get report",
-			args: args{
-				clientID: 4,
-				reportID: 2,
-			},
-			wantErr: errTest,
-			before: func(f fields, args args) {
-				f.medRepo.EXPECT().GetReportByIDClient(args.clientID).Return(nil, errTest)
 			},
 		},
 		{
 			name: "error deleting report",
 			args: args{
-				clientID: 4,
 				reportID: 2,
 			},
 			wantErr: errTest,
@@ -73,7 +58,6 @@ func TestDeleteUseCase(t *testing.T) {
 				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now, now)
 				report.ID = args.reportID
 
-				f.medRepo.EXPECT().GetReportByIDClient(args.clientID).Return(report, nil)
 				f.medRepo.EXPECT().Delete(report.ID).Return(errTest)
 			},
 		},
@@ -95,7 +79,7 @@ func TestDeleteUseCase(t *testing.T) {
 			uc := NewUseCase(f.medRepo, f.clientRepo, f.timer)
 
 			//выполнили
-			err := uc.Delete(tt.args.clientID)
+			err := uc.Delete(tt.args.reportID)
 
 			//проверяем результат
 			if tt.wantErr != nil {

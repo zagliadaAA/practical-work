@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"project2/internal/domain"
-	"project2/internal/usecase/client_usecase/mocks"
+	"medicalCenter/internal/domain"
+	"medicalCenter/internal/usecase/client_usecase/mocks"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -57,7 +57,7 @@ func TestUpdateUseCase(t *testing.T) {
 
 				client := domain.NewClient("Artem", now, "+7888888", now)
 
-				f.clientRepo.EXPECT().FindByID(args.req.ID).Return(client, nil)
+				f.clientRepo.EXPECT().GetClientByID(args.req.ID).Return(client, nil)
 				client.Name = args.req.Name
 				client.BDate = args.req.BDate
 				client.PhoneNumber = args.req.PhoneNumber
@@ -65,7 +65,7 @@ func TestUpdateUseCase(t *testing.T) {
 			},
 		},
 		{
-			name: "error on FindByID",
+			name: "error on GetClientByID",
 			args: args{
 				req: UpdateClientReq{
 					ID:          4,
@@ -76,7 +76,7 @@ func TestUpdateUseCase(t *testing.T) {
 			},
 			wantErr: errTest,
 			before: func(f fields, args args) {
-				f.clientRepo.EXPECT().FindByID(args.req.ID).Return(nil, errTest)
+				f.clientRepo.EXPECT().GetClientByID(args.req.ID).Return(nil, errTest)
 			},
 		},
 		{
@@ -95,7 +95,7 @@ func TestUpdateUseCase(t *testing.T) {
 
 				client := domain.NewClient("Artem", now, "+7888888", now)
 
-				f.clientRepo.EXPECT().FindByID(args.req.ID).Return(client, nil)
+				f.clientRepo.EXPECT().GetClientByID(args.req.ID).Return(client, nil)
 				client.Name = args.req.Name
 				client.BDate = args.req.BDate
 				client.PhoneNumber = args.req.PhoneNumber

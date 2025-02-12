@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"project2/internal/domain"
-	"project2/internal/usecase/medical_report_usecase/mocks"
+	"medicalCenter/internal/domain"
+	"medicalCenter/internal/usecase/medical_report_usecase/mocks"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -41,6 +41,7 @@ func TestUpdateUseCase(t *testing.T) {
 			name: "success",
 			args: args{
 				req: UpdateReportReq{
+					ID:         2,
 					IDClient:   4,
 					DoctorName: "Ложкин В",
 					Diagnosis:  "A77.7",
@@ -58,7 +59,7 @@ func TestUpdateUseCase(t *testing.T) {
 
 				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now, now)
 
-				f.medRepo.EXPECT().GetReportByIDClient(args.req.IDClient).Return(report, nil)
+				f.medRepo.EXPECT().GetReportByID(args.req.ID).Return(report, nil)
 				report.DoctorName = args.req.DoctorName
 				report.Diagnosis = args.req.Diagnosis
 				f.medRepo.EXPECT().Update(report).Return(report, nil)
@@ -68,6 +69,7 @@ func TestUpdateUseCase(t *testing.T) {
 			name: "error on get report",
 			args: args{
 				req: UpdateReportReq{
+					ID:         2,
 					IDClient:   4,
 					DoctorName: "Ложкин",
 					Diagnosis:  "A77",
@@ -75,13 +77,14 @@ func TestUpdateUseCase(t *testing.T) {
 			},
 			wantErr: errTest,
 			before: func(f fields, args args) {
-				f.medRepo.EXPECT().GetReportByIDClient(args.req.IDClient).Return(nil, errTest)
+				f.medRepo.EXPECT().GetReportByID(args.req.ID).Return(nil, errTest)
 			},
 		},
 		{
 			name: "error on update report",
 			args: args{
 				req: UpdateReportReq{
+					ID:         2,
 					IDClient:   4,
 					DoctorName: "Ложкин",
 					Diagnosis:  "A77",
@@ -93,7 +96,7 @@ func TestUpdateUseCase(t *testing.T) {
 
 				report := domain.NewMedicalReport("Вова Лекарь", "Z.17777", 4, now, now)
 
-				f.medRepo.EXPECT().GetReportByIDClient(args.req.IDClient).Return(report, nil)
+				f.medRepo.EXPECT().GetReportByID(args.req.ID).Return(report, nil)
 				report.DoctorName = args.req.DoctorName
 				report.Diagnosis = args.req.Diagnosis
 				f.medRepo.EXPECT().Update(report).Return(nil, errTest)

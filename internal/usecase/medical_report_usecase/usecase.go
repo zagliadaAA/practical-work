@@ -3,7 +3,7 @@ package medical_report_usecase
 import (
 	"time"
 
-	"project2/internal/domain"
+	"medicalCenter/internal/domain"
 )
 
 type UseCase struct {
@@ -17,13 +17,13 @@ type (
 		Create(medicalReport *domain.MedicalReport) (*domain.MedicalReport, error)
 		Delete(id int) error
 		Update(medicalReport *domain.MedicalReport) (*domain.MedicalReport, error)
-		GetReportByIDClient(clientID int) (*domain.MedicalReport, error)
+		GetReportByID(clientID int) (*domain.MedicalReport, error)
 	}
 	timer interface {
 		Now() time.Time
 	}
 	clientRepo interface {
-		FindByID(id int) (*domain.Client, error)
+		GetClientByID(id int) (*domain.Client, error)
 	}
 )
 

@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"project2/internal/domain"
-	"project2/internal/usecase/medical_report_usecase/mocks"
+	"medicalCenter/internal/domain"
+	"medicalCenter/internal/usecase/medical_report_usecase/mocks"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -59,7 +59,7 @@ func TestCreateUseCase(t *testing.T) {
 				client := domain.NewClient("Artem", time.Date(1999, 12, 10, 0, 0, 0, 0, time.UTC), "+70000000000", now)
 				client.ID = args.req.IDClient
 
-				f.clientRepo.EXPECT().FindByID(args.req.IDClient).Return(client, nil)
+				f.clientRepo.EXPECT().GetClientByID(args.req.IDClient).Return(client, nil)
 				report := domain.NewMedicalReport(args.req.DoctorName, args.req.Diagnosis, client.ID, now, now)
 				f.medRepo.EXPECT().Create(report).Return(report, nil)
 			},
@@ -75,7 +75,7 @@ func TestCreateUseCase(t *testing.T) {
 			},
 			wantErr: errTest,
 			before: func(f fields, args args) {
-				f.clientRepo.EXPECT().FindByID(args.req.IDClient).Return(nil, errTest)
+				f.clientRepo.EXPECT().GetClientByID(args.req.IDClient).Return(nil, errTest)
 			},
 		},
 		{
@@ -94,7 +94,7 @@ func TestCreateUseCase(t *testing.T) {
 				client := domain.NewClient("Artem", time.Date(1999, 12, 10, 0, 0, 0, 0, time.UTC), "+70000000000", now)
 				client.ID = args.req.IDClient
 
-				f.clientRepo.EXPECT().FindByID(args.req.IDClient).Return(client, nil)
+				f.clientRepo.EXPECT().GetClientByID(args.req.IDClient).Return(client, nil)
 				report := domain.NewMedicalReport(args.req.DoctorName, args.req.Diagnosis, client.ID, now, now)
 				f.medRepo.EXPECT().Create(report).Return(nil, errTest)
 			},
